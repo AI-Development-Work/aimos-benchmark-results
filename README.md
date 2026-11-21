@@ -5,6 +5,29 @@ of open-weight LLMs, self-hosted on owned hardware. This repo is a running recor
 hardware and the model roster will change over time; each result row is tagged with
 the hardware config and date it was run under.
 
+## Headline: time to a correct solution
+
+What developers actually care about is how fast they get working code, not how many tries a model needs. This table scores every run on **wall-clock time to a correct solution**: the share of all 225 exercises solved within 5, 10 and 30 minutes of starting, all tries included. The standard leaderboard number (pass within 2 tries) is shown alongside for comparison.
+
+| Run | Leaderboard score (2 tries) | Solved (final) | Median time to solve | Solved within 5 min | within 10 min | within 30 min |
+|---|---|---|---|---|---|---|
+| DeepSeek-V4.1-Flash, thinking OFF — retry run (up to 10 tries) | 72.0% | **92.0%** | 1.6 min | **78.7%** | **89.8%** | 91.6% |
+| Qwen3.8-27B FP8, thinking OFF — retry run (up to 10 tries) | 48.0% | 84.4% | 1.1 min | 74.7% | 82.7% | 84.4% |
+| DeepSeek-V4.1-Flash, thinking ON (2 tries) | **85.8%** | 85.8% | 8.8 min | 30.2% | 45.8% | 73.8% |
+| Qwen3.5-397B-A17B Q4_K_M, thinking OFF (2 tries) — *in progress* | 84.0% | 84.0% | 6.4 min | 31.4% | 62.8% | 78.2% |
+| Qwen3.8-27B FP8, thinking ON (2 tries) | 69.3% | 69.3% | 4.0 min | 39.1% | 53.3% | 68.9% |
+| DeepSeek-V4.1-Flash, thinking OFF (2 tries) | 68.0% | 68.0% | 1.7 min | 61.3% | 67.1% | 68.0% |
+| Qwen3-235B-A22B-Instruct-2507 NVFP4 (2 tries) | 53.8% | 53.8% | 0.7 min | 53.3% | 53.8% | 53.8% |
+| gpt-oss-120b (2 tries) | 53.3% | 53.3% | 0.7 min | 52.4% | 52.9% | 53.3% |
+| Qwen3.8-27B FP8, thinking OFF (2 tries) | 50.7% | 50.7% | 0.8 min | 48.4% | 50.7% | 50.7% |
+| Qwen3.8-27B BF16, thinking OFF (2 tries) | 50.2% | 50.2% | 1.3 min | 43.1% | 48.4% | 50.2% |
+| Mistral Small 4 119B NVFP4 (2 tries) | 15.1% | 15.1% | 0.2 min | 15.1% | 15.1% | 15.1% |
+| Devstral Small 2 24B (2 tries) | 13.8% | 13.8% | 0.4 min | 13.8% | 13.8% | 13.8% |
+
+**What it shows:** a fast model that retries against test feedback gets to working code sooner than a slow "thinking" model. DeepSeek with thinking off and retries solves 79% of exercises within 5 minutes; the same model with thinking on solves 30% in that time, despite the higher leaderboard score. The two "retry run" rows are separate runs from the standard 2-try runs of the same model.
+
+*How measured:* per-exercise wall-clock time, 4 exercises running in parallel on the same hardware (so times are under load), self-hosted on a Dell T7920 with 2× RTX PRO 6000 Blackwell Max-Q. Script and raw results: see [RESULTS.md](RESULTS.md).
+
 ## Methodology
 
 - Benchmark: Aider Polyglot — 225 coding exercises (from [Exercism](https://exercism.org)),
