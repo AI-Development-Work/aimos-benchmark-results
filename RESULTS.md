@@ -82,3 +82,10 @@ Reading: a fast non-thinking model in a test-feedback loop reaches a correct sol
 
 - Standard 2-try run `full-deepseek-2gpu-diff-nothink` (same server, aq10.sh): 225 of 225; first try 79 (35.1%); within two tries 156 (69.3%) vs 68.0% on 1 GPU + RAM; well-formed 94.2% (16 malformed, 19 error outputs, 1 context exhaustion, 2 test timeouts). Per language: cpp 19/26, go 26/39, java 26/47, javascript 36/49, python 27/34, rust 22/30. Wall clock 1.04 h (17:29–18:31 UTC) vs 2.5 h on 1 GPU; avg 59.7 s, median 43.3 s per exercise (1 GPU: 153.1 s avg); ~150 solved per hour. Tokens 2.34 M prompt, 0.26 M completion. Median time to solve 0.6 min.
 - Context: the server reports 65,536 tokens. maya-ds4 docs say each conversation under `--parallel` keeps its own KV cache, and a single 29K-token prompt ran with 4 slots configured (it would not fit a 16K share), so 64K is per request, not shared.
+
+## Qwen3-235B-A22B-Thinking-2507 Q8_0 (8-bit) — stopped as impractical on this hardware (2026-11-21)
+
+- Setup: unsloth GGUF Q8_0 (~250 GB), llama.cpp server-cuda, both GPUs, `--n-cpu-moe 40` (40 layers' experts in system RAM), `--tensor-split 2,1`, 4 slots × 32K context, `-b 4096 -ub 2048 --threads 48`, `--reasoning on`. VRAM 82.1 / 85.5 GB. Launcher `~/df-bench/std/llama_up_q235t.sh`.
+- Speed test: decode ~6 tok/s single request (6.2 at 1K, 6.0 at 30K); prompt 64 tok/s at ~1K, ~185 tok/s at 16–30K; 4 concurrent ~2.2 tok/s each (~7–9 aggregate).
+- Smoke run (5 exercises, diff, 4 sessions, aider timeout 1800 s): 0 of 5 finished after 95 minutes — each thinking turn ran 25–40 minutes (3,000+ reasoning tokens at ~2 tok/s per slot). Projected full run 60–100+ h, far past the 20 h cap, so the run was stopped and no accuracy score exists. Partial folder kept: `2026-11-21-19-24-36--smoke-qwen3-235b-think-q8`.
+- Reading: an 8-bit 235B thinking model needs to be fully GPU-resident (~250 GB → 4× 96 GB GPUs) to be usable; on 2 GPUs with ~half the experts in RAM it is ~12x slower than DeepSeek 2-bit on 2 GPUs (6 vs 72 tok/s).
