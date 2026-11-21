@@ -69,3 +69,13 @@ Reading: a fast non-thinking model in a test-feedback loop reaches a correct sol
 - Time to solution: median 6.2 min; 33.8% solved within 5 min, 63.6% within 10 min, 79.1% within 30 min.
 - Reading: accuracy on par with DeepSeek thinking ON (85.8%) without thinking, and the best first-try rate so far (58.2%), but slow on this hardware because ~68 GB of expert weights run on the CPU from RAM (GPUs ~10% utilized). Should run several times faster fully GPU-resident (4 GPUs, or a 3-bit build on 2).
 - Thinking-ON run skipped (projected far beyond the 20 h cap at this speed); its smoke run was stopped and set aside as ABANDONED-smoke-qwen35-397b-q4km-think.
+
+
+## DeepSeek-V4.1-Flash-1017 Maya-S IQ2_XXS (~2-bit) on 2 GPUs — retry run (2026-11-21)
+
+- Setup: same 2-bit Maya-S GGUF as the earlier runs, served by the maya-ds4 engine (container `maya`, config maya-ds4-p4.json): `--tp 2` (falls back to a layer split: GPU0 layers 0-17, GPU1 18-39 + head), all 15,360 experts in VRAM (no RAM offload), `--max-context 65536 --parallel 4`, temperature 1.0, thinking OFF per request (`chat_template_kwargs.enable_thinking=false`). VRAM 79.8 / 96.4 GB. Earlier runs: GPU 1 + system RAM.
+- Speed test (single request): decode ~72 tok/s (1-GPU clean single stream ~35), prompt 1.5K tok/s (~1K) to 3.5K tok/s (~29K); 4 concurrent ~127 tok/s aggregate.
+- Run `until10-deepseek-2gpu-diff-nothink` (aq10.sh), diff, 4 sessions, up to 10 tries: 225 of 225; first try 76 (33.8%); by try 2 155 (68.9%); final 207 (92.0%); 18 unsolved after 10 tries. Solved at try: 1: 76, 2: 79, 3: 31, 4: 7, 5: 6, 6: 3, 7: 4, 8: 1. Average 2.12 tries per solved exercise. 19 malformed, 69 error outputs, 3 context exhaustions, 2 test timeouts.
+- Speed: wall clock 2.07 h (15:24:53–17:29:05 UTC) vs 4.2 h for the 1-GPU retry run; ~100 solved per hour; avg 120.5 s, median 52.2 s per exercise. Tokens 6.22 M prompt, 0.41 M completion.
+- Time to solution: median 0.8 min; 88.4% solved within 5 min, 90.7% within 10, 92.0% within 30 (1-GPU: 1.6 min, 78.7%, 89.8%, 91.6%).
+- Reading: same accuracy, about twice as fast; the fastest route to a correct solution measured so far.

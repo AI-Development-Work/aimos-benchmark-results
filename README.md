@@ -11,7 +11,8 @@ What developers actually care about is how fast they get working code, not how m
 
 | Run | Leaderboard score (2 tries) | Solved (final) | Median time to solve | Solved within 5 min | within 10 min | within 30 min |
 |---|---|---|---|---|---|---|
-| DeepSeek-V4.1-Flash, thinking OFF — retry run (up to 10 tries) | 72.0% | **92.0%** | 1.6 min | **78.7%** | **89.8%** | 91.6% |
+| **DeepSeek-V4.1-Flash (2-bit), thinking OFF — retry run, 2 GPUs** | 68.9% | **92.0%** | **0.8 min** | **88.4%** | **90.7%** | **92.0%** |
+| DeepSeek-V4.1-Flash, thinking OFF — retry run (up to 10 tries), 1 GPU + RAM | 72.0% | **92.0%** | 1.6 min | **78.7%** | **89.8%** | 91.6% |
 | Qwen3.8-27B FP8, thinking OFF — retry run (up to 10 tries) | 48.0% | 84.4% | 1.1 min | 74.7% | 82.7% | 84.4% |
 | DeepSeek-V4.1-Flash, thinking ON (2 tries) | **85.8%** | 85.8% | 8.8 min | 30.2% | 45.8% | 73.8% |
 | Qwen3.5-397B-A17B Q4_K_M, thinking OFF (2 tries) | 84.4% | 84.4% | 6.2 min | 33.8% | 63.6% | 79.1% |
@@ -23,6 +24,8 @@ What developers actually care about is how fast they get working code, not how m
 | Qwen3.8-27B BF16, thinking OFF (2 tries) | 50.2% | 50.2% | 1.3 min | 43.1% | 48.4% | 50.2% |
 | Mistral Small 4 119B NVFP4 (2 tries) | 15.1% | 15.1% | 0.2 min | 15.1% | 15.1% | 15.1% |
 | Devstral Small 2 24B (2 tries) | 13.8% | 13.8% | 0.4 min | 13.8% | 13.8% | 13.8% |
+
+**2 GPUs vs 1:** the same 2-bit DeepSeek build moved from 1 GPU + system RAM to fully on both GPUs went from 78.7% to 88.4% solved within 5 minutes, with the median time to solve halved (1.6 → 0.8 min), at the same final accuracy (92.0%).
 
 **What it shows:** a fast model that retries against test feedback gets to working code sooner than a slow "thinking" model. DeepSeek with thinking off and retries solves 79% of exercises within 5 minutes; the same model with thinking on solves 30% in that time, despite the higher leaderboard score. The two "retry run" rows are separate runs from the standard 2-try runs of the same model.
 
