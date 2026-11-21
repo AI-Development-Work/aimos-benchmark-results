@@ -14,7 +14,7 @@ What developers actually care about is how fast they get working code, not how m
 | DeepSeek-V4.1-Flash, thinking OFF — retry run (up to 10 tries) | 72.0% | **92.0%** | 1.6 min | **78.7%** | **89.8%** | 91.6% |
 | Qwen3.8-27B FP8, thinking OFF — retry run (up to 10 tries) | 48.0% | 84.4% | 1.1 min | 74.7% | 82.7% | 84.4% |
 | DeepSeek-V4.1-Flash, thinking ON (2 tries) | **85.8%** | 85.8% | 8.8 min | 30.2% | 45.8% | 73.8% |
-| Qwen3.5-397B-A17B Q4_K_M, thinking OFF (2 tries) — *in progress* | 84.0% | 84.0% | 6.4 min | 31.4% | 62.8% | 78.2% |
+| Qwen3.5-397B-A17B Q4_K_M, thinking OFF (2 tries) | 84.4% | 84.4% | 6.2 min | 33.8% | 63.6% | 79.1% |
 | Qwen3.8-27B FP8, thinking ON (2 tries) | 69.3% | 69.3% | 4.0 min | 39.1% | 53.3% | 68.9% |
 | DeepSeek-V4.1-Flash, thinking OFF (2 tries) | 68.0% | 68.0% | 1.7 min | 61.3% | 67.1% | 68.0% |
 | Qwen3-235B-A22B-Instruct-2507 NVFP4 (2 tries) | 53.8% | 53.8% | 0.7 min | 53.3% | 53.8% | 53.8% |
@@ -55,6 +55,7 @@ What developers actually care about is how fast they get working code, not how m
 | Model | First try | Within two tries | Well-formed | Sec/exercise |
 |---|---|---|---|---|
 | DeepSeek-V4.1-Flash-1017 (thinking ON) | 37.8% | **85.8%** | 98.7% | 1109.5 |
+| Qwen3.5-397B-A17B Q4_K_M (llama.cpp, thinking OFF) | 58.2% | 84.4% | 97.8% | 838.5 |
 | Qwen3.8-27B FP8 (thinking ON) | 32.0% | 69.3% | 100% | 417.1 |
 | DeepSeek-V4.1-Flash-1017 (thinking OFF) | 32.0% | 68.0% | n/a | 153.1 |
 | Qwen3-235B-A22B-Instruct-2507 NVFP4 (non-thinking) | 20.9% | 53.8% | 80.4% | 65.3 |

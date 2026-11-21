@@ -40,14 +40,14 @@ RUNS THAT DID NOT COMPLETE 2026-11-19 (causes found, repeated by ~/df-bench/std/
 
 ## Time to solution (added 2026-11-21)
 
-Founder priority: the measure that matters is wall-clock time to a correct solution, not the number of tries. Share of all 225 exercises solved within N minutes of starting (per-exercise wall time, all tries included; 4 parallel sessions share the GPU, so times are under load). Script: `~/df-bench/std/ttsolve.py` on the T7920. The 397B row is in progress (186 of 225).
+Founder priority: the measure that matters is wall-clock time to a correct solution, not the number of tries. Share of all 225 exercises solved within N minutes of starting (per-exercise wall time, all tries included; 4 parallel sessions share the GPU, so times are under load). Script: `~/df-bench/std/ttsolve.py` on the T7920. All rows are complete 225-exercise runs.
 
 | Run | Benchmark (2 tries) | Solved (final) | Median time to solve | Solved within 5 min | within 10 min | within 30 min |
 |---|---|---|---|---|---|---|
 | DeepSeek-V4.1-Flash thinking OFF — retry run (up to 10 tries; separate run) | 72.0% | 92.0% | 1.6 min | 78.7% | 89.8% | 91.6% |
 | Qwen3.8-27B FP8 thinking OFF — retry run (up to 10 tries; separate run) | 48.0% | 84.4% | 1.1 min | 74.7% | 82.7% | 84.4% |
 | DeepSeek-V4.1-Flash thinking ON, 2 tries | 85.8% | 85.8% | 8.8 min | 30.2% | 45.8% | 73.8% |
-| Qwen3.5-397B-A17B Q4_K_M thinking OFF, 2 tries (partial) | 83.9% | 83.9% | 6.4 min | 31.2% | 62.4% | 78.0% |
+| Qwen3.5-397B-A17B Q4_K_M thinking OFF, 2 tries | 84.4% | 84.4% | 6.2 min | 33.8% | 63.6% | 79.1% |
 | Qwen3.8-27B FP8 thinking ON, 2 tries | 69.3% | 69.3% | 4.0 min | 39.1% | 53.3% | 68.9% |
 | DeepSeek-V4.1-Flash thinking OFF — standard benchmark run (2 tries) | 68.0% | 68.0% | 1.7 min | 61.3% | 67.1% | 68.0% |
 | Qwen3-235B-A22B-Instruct-2507 NVFP4, 2 tries | 53.8% | 53.8% | 0.7 min | 53.3% | 53.8% | 53.8% |
@@ -58,3 +58,14 @@ Founder priority: the measure that matters is wall-clock time to a correct solut
 | Devstral Small 2 24B, 2 tries | 13.8% | 13.8% | 0.4 min | 13.8% | 13.8% | 13.8% |
 
 Reading: a fast non-thinking model in a test-feedback loop reaches a correct solution sooner than a slow thinking model. DeepSeek thinking OFF with retries solves 78.7% within 5 minutes vs 30.2% for the same model thinking ON.
+
+
+## Qwen3.5-397B-A17B Q4_K_M — llama.cpp, thinking OFF (2026-11-21)
+
+- Setup: unsloth-style GGUF Q4_K_M (228 GB, 6 shards), llama.cpp server-cuda (build 12464), both GPUs, `--n-cpu-moe 18` (18 layers' experts in system RAM), `--tensor-split 13,7`, 131072 total context (4 slots × 32K), `-b 4096 -ub 2048 --threads 48`, `--reasoning off`, `--reasoning-format deepseek`. VRAM ~94 GB / ~81 GB. Launcher `~/df-bench/std/llama_up.sh`, run `aq8.sh`.
+- Result (225 of 225, diff format, 4 sessions): first try 131 (58.2%), within two tries 190 (84.4%), well-formed 97.8% (6 malformed responses, 35 error outputs, 1 context exhaustion, 0 test timeouts).
+- Per language within two tries: cpp 23/26, go 34/39, java 38/47, javascript 42/49, python 32/34, rust 21/30.
+- Speed: wall clock 13.3 h (01:29–14:46 UTC); avg 838.5 s, median 423.5 s per exercise (4 parallel); ~14.3 solved per hour; ~252 s wall clock per solved exercise. Tokens 1.74 M prompt, 0.38 M completion. Speed test (single request): ~150 tok/s prompt, ~18.5 tok/s decode; 4 concurrent: ~8 tok/s decode each.
+- Time to solution: median 6.2 min; 33.8% solved within 5 min, 63.6% within 10 min, 79.1% within 30 min.
+- Reading: accuracy on par with DeepSeek thinking ON (85.8%) without thinking, and the best first-try rate so far (58.2%), but slow on this hardware because ~68 GB of expert weights run on the CPU from RAM (GPUs ~10% utilized). Should run several times faster fully GPU-resident (4 GPUs, or a 3-bit build on 2).
+- Thinking-ON run skipped (projected far beyond the 20 h cap at this speed); its smoke run was stopped and set aside as ABANDONED-smoke-qwen35-397b-q4km-think.
