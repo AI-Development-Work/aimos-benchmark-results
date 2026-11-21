@@ -44,15 +44,15 @@ Founder priority: the measure that matters is wall-clock time to a correct solut
 
 | Run | Benchmark (2 tries) | Solved (final) | Median time to solve | Solved within 5 min | within 10 min | within 30 min |
 |---|---|---|---|---|---|---|
-| DeepSeek-V4.1-Flash thinking OFF, up to 10 tries | 72.0% | 92.0% | 1.6 min | 78.7% | 89.8% | 91.6% |
-| Qwen3.8-27B FP8 thinking OFF, up to 10 tries | 48.0% | 84.4% | 1.1 min | 74.7% | 82.7% | 84.4% |
+| DeepSeek-V4.1-Flash thinking OFF — retry run (up to 10 tries; separate run) | 72.0% | 92.0% | 1.6 min | 78.7% | 89.8% | 91.6% |
+| Qwen3.8-27B FP8 thinking OFF — retry run (up to 10 tries; separate run) | 48.0% | 84.4% | 1.1 min | 74.7% | 82.7% | 84.4% |
 | DeepSeek-V4.1-Flash thinking ON, 2 tries | 85.8% | 85.8% | 8.8 min | 30.2% | 45.8% | 73.8% |
 | Qwen3.5-397B-A17B Q4_K_M thinking OFF, 2 tries (partial) | 83.9% | 83.9% | 6.4 min | 31.2% | 62.4% | 78.0% |
 | Qwen3.8-27B FP8 thinking ON, 2 tries | 69.3% | 69.3% | 4.0 min | 39.1% | 53.3% | 68.9% |
-| DeepSeek-V4.1-Flash thinking OFF, 2 tries | 68.0% | 68.0% | 1.7 min | 61.3% | 67.1% | 68.0% |
+| DeepSeek-V4.1-Flash thinking OFF — standard benchmark run (2 tries) | 68.0% | 68.0% | 1.7 min | 61.3% | 67.1% | 68.0% |
 | Qwen3-235B-A22B-Instruct-2507 NVFP4, 2 tries | 53.8% | 53.8% | 0.7 min | 53.3% | 53.8% | 53.8% |
 | gpt-oss-120b, 2 tries | 53.3% | 53.3% | 0.7 min | 52.4% | 52.9% | 53.3% |
-| Qwen3.8-27B FP8 thinking OFF, 2 tries | 50.7% | 50.7% | 0.8 min | 48.4% | 50.7% | 50.7% |
+| Qwen3.8-27B FP8 thinking OFF — standard benchmark run (2 tries) | 50.7% | 50.7% | 0.8 min | 48.4% | 50.7% | 50.7% |
 | Qwen3.8-27B BF16 thinking OFF, 2 tries | 50.2% | 50.2% | 1.3 min | 43.1% | 48.4% | 50.2% |
 | Mistral Small 4 119B NVFP4, 2 tries | 15.1% | 15.1% | 0.2 min | 15.1% | 15.1% | 15.1% |
 | Devstral Small 2 24B, 2 tries | 13.8% | 13.8% | 0.4 min | 13.8% | 13.8% | 13.8% |
