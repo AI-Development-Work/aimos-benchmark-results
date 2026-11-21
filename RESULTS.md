@@ -53,6 +53,7 @@ Founder priority: the measure that matters is wall-clock time to a correct solut
 | Qwen3-235B-A22B-Instruct-2507 NVFP4, 2 tries | 53.8% | 53.8% | 0.7 min | 53.3% | 53.8% | 53.8% |
 | gpt-oss-120b, 2 tries | 53.3% | 53.3% | 0.7 min | 52.4% | 52.9% | 53.3% |
 | Qwen3.8-27B FP8 thinking OFF — standard benchmark run (2 tries) | 50.7% | 50.7% | 0.8 min | 48.4% | 50.7% | 50.7% |
+| Qwen3.8-27B NVFP4 thinking OFF, 2 tries | 42.7% | 42.7% | 0.5 min | 42.2% | 42.7% | 42.7% |
 | Qwen3.8-27B BF16 thinking OFF, 2 tries | 50.2% | 50.2% | 1.3 min | 43.1% | 48.4% | 50.2% |
 | Mistral Small 4 119B NVFP4, 2 tries | 15.1% | 15.1% | 0.2 min | 15.1% | 15.1% | 15.1% |
 | Devstral Small 2 24B, 2 tries | 13.8% | 13.8% | 0.4 min | 13.8% | 13.8% | 13.8% |
@@ -89,3 +90,12 @@ Reading: a fast non-thinking model in a test-feedback loop reaches a correct sol
 - Speed test: decode ~6 tok/s single request (6.2 at 1K, 6.0 at 30K); prompt 64 tok/s at ~1K, ~185 tok/s at 16–30K; 4 concurrent ~2.2 tok/s each (~7–9 aggregate).
 - Smoke run (5 exercises, diff, 4 sessions, aider timeout 1800 s): 0 of 5 finished after 95 minutes — each thinking turn ran 25–40 minutes (3,000+ reasoning tokens at ~2 tok/s per slot). Projected full run 60–100+ h, far past the 20 h cap, so the run was stopped and no accuracy score exists. Partial folder kept: `2026-11-21-19-24-36--smoke-qwen3-235b-think-q8`.
 - Reading: an 8-bit 235B thinking model needs to be fully GPU-resident (~250 GB → 4× 96 GB GPUs) to be usable; on 2 GPUs with ~half the experts in RAM it is ~12x slower than DeepSeek 2-bit on 2 GPUs (6 vs 72 tok/s).
+
+
+## Qwen3.8-27B NVFP4 (4-bit) — thinking OFF (2026-11-21)
+
+- Setup: nvidia/Qwen3.8-27B-NVFP4 (19.9 GiB weights), vLLM (image vllm/vllm-openai:qwen38), GPU 0 only, same flags as the FP8 runs (`--max-model-len 262144 --max-num-seqs 4 --reasoning-parser qwen3`). Load ~13 min (FP4 kernel autotuning). Chain aq12.sh.
+- Speed test: decode 66.5 tok/s single (~1K prompt), 64.1 at ~16K; prompt ~7,265 tok/s at ~16K; 4 concurrent ~59 tok/s each, ~237 aggregate.
+- Result (225 of 225, diff, 4 sessions): first try 38 (16.9%), within two tries 96 (42.7%), well-formed 90.7% (25 malformed, 26 error outputs, 1 context exhaustion, 2 test timeouts). Per language: cpp 11/26, go 13/39, java 17/47, javascript 24/49, python 17/34, rust 14/30.
+- Speed: wall clock 1.23 h (21:23–22:37 UTC); avg 72.5 s, median 43.9 s per exercise; ~78 solved per hour. Tokens 3.82 M prompt, 0.65 M completion. Median time to solve 0.5 min.
+- Precision comparison, thinking OFF: BF16 50.2%, FP8 50.7%, NVFP4 42.7% — 4-bit costs about 8 points on this 27B dense model, while 8-bit costs nothing measurable. It also produced more malformed edits (25 vs ~0 for FP8).

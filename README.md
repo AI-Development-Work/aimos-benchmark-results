@@ -23,6 +23,7 @@ What developers actually care about is how fast they get working code, not how m
 | gpt-oss-120b (2 tries) | 53.3% | 53.3% | 0.7 min | 52.4% | 52.9% | 53.3% |
 | Qwen3.8-27B FP8, thinking OFF (2 tries) | 50.7% | 50.7% | 0.8 min | 48.4% | 50.7% | 50.7% |
 | Qwen3.8-27B BF16, thinking OFF (2 tries) | 50.2% | 50.2% | 1.3 min | 43.1% | 48.4% | 50.2% |
+| Qwen3.8-27B NVFP4 (4-bit), thinking OFF (2 tries) | 42.7% | 42.7% | 0.5 min | 42.2% | 42.7% | 42.7% |
 | Mistral Small 4 119B NVFP4 (2 tries) | 15.1% | 15.1% | 0.2 min | 15.1% | 15.1% | 15.1% |
 | Devstral Small 2 24B (2 tries) | 13.8% | 13.8% | 0.4 min | 13.8% | 13.8% | 13.8% |
 
@@ -67,6 +68,7 @@ What developers actually care about is how fast they get working code, not how m
 | gpt-oss-120b | 15.6% | 53.3% | 91.6% | 55.6 |
 | Qwen3.8-27B FP8 (thinking OFF) | 16.0% | 50.7% | n/a | 108.4 |
 | Qwen3.8-27B full precision BF16 (thinking OFF) | 17.3% | 50.2% | n/a | 171.2 |
+| Qwen3.8-27B NVFP4 4-bit (thinking OFF) | 16.9% | 42.7% | 90.7% | 72.5 |
 | Mistral Small 4 119B NVFP4 | 4.4% | 15.1% | 93.8% | 23.6 |
 | Devstral Small 2 24B | 3.6% | 13.8% | n/a | 43.7 |
 
