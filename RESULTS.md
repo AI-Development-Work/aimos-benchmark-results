@@ -79,3 +79,6 @@ Reading: a fast non-thinking model in a test-feedback loop reaches a correct sol
 - Speed: wall clock 2.07 h (15:24:53–17:29:05 UTC) vs 4.2 h for the 1-GPU retry run; ~100 solved per hour; avg 120.5 s, median 52.2 s per exercise. Tokens 6.22 M prompt, 0.41 M completion.
 - Time to solution: median 0.8 min; 88.4% solved within 5 min, 90.7% within 10, 92.0% within 30 (1-GPU: 1.6 min, 78.7%, 89.8%, 91.6%).
 - Reading: same accuracy, about twice as fast; the fastest route to a correct solution measured so far.
+
+- Standard 2-try run `full-deepseek-2gpu-diff-nothink` (same server, aq10.sh): 225 of 225; first try 79 (35.1%); within two tries 156 (69.3%) vs 68.0% on 1 GPU + RAM; well-formed 94.2% (16 malformed, 19 error outputs, 1 context exhaustion, 2 test timeouts). Per language: cpp 19/26, go 26/39, java 26/47, javascript 36/49, python 27/34, rust 22/30. Wall clock 1.04 h (17:29–18:31 UTC) vs 2.5 h on 1 GPU; avg 59.7 s, median 43.3 s per exercise (1 GPU: 153.1 s avg); ~150 solved per hour. Tokens 2.34 M prompt, 0.26 M completion. Median time to solve 0.6 min.
+- Context: the server reports 65,536 tokens. maya-ds4 docs say each conversation under `--parallel` keeps its own KV cache, and a single 29K-token prompt ran with 4 slots configured (it would not fit a 16K share), so 64K is per request, not shared.

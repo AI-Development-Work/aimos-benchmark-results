@@ -17,7 +17,8 @@ What developers actually care about is how fast they get working code, not how m
 | DeepSeek-V4.1-Flash, thinking ON (2 tries) | **85.8%** | 85.8% | 8.8 min | 30.2% | 45.8% | 73.8% |
 | Qwen3.5-397B-A17B Q4_K_M, thinking OFF (2 tries) | 84.4% | 84.4% | 6.2 min | 33.8% | 63.6% | 79.1% |
 | Qwen3.8-27B FP8, thinking ON (2 tries) | 69.3% | 69.3% | 4.0 min | 39.1% | 53.3% | 68.9% |
-| DeepSeek-V4.1-Flash, thinking OFF (2 tries) | 68.0% | 68.0% | 1.7 min | 61.3% | 67.1% | 68.0% |
+| DeepSeek-V4.1-Flash (2-bit), thinking OFF (2 tries), 2 GPUs | 69.3% | 69.3% | 0.6 min | 69.3% | 69.3% | 69.3% |
+| DeepSeek-V4.1-Flash, thinking OFF (2 tries), 1 GPU + RAM | 68.0% | 68.0% | 1.7 min | 61.3% | 67.1% | 68.0% |
 | Qwen3-235B-A22B-Instruct-2507 NVFP4 (2 tries) | 53.8% | 53.8% | 0.7 min | 53.3% | 53.8% | 53.8% |
 | gpt-oss-120b (2 tries) | 53.3% | 53.3% | 0.7 min | 52.4% | 52.9% | 53.3% |
 | Qwen3.8-27B FP8, thinking OFF (2 tries) | 50.7% | 50.7% | 0.8 min | 48.4% | 50.7% | 50.7% |
@@ -60,6 +61,7 @@ What developers actually care about is how fast they get working code, not how m
 | DeepSeek-V4.1-Flash-1017 (thinking ON) | 37.8% | **85.8%** | 98.7% | 1109.5 |
 | Qwen3.5-397B-A17B Q4_K_M (llama.cpp, thinking OFF) | 58.2% | 84.4% | 97.8% | 838.5 |
 | Qwen3.8-27B FP8 (thinking ON) | 32.0% | 69.3% | 100% | 417.1 |
+| DeepSeek-V4.1-Flash-1017 2-bit, 2 GPUs (thinking OFF) | 35.1% | 69.3% | 94.2% | 59.7 |
 | DeepSeek-V4.1-Flash-1017 (thinking OFF) | 32.0% | 68.0% | n/a | 153.1 |
 | Qwen3-235B-A22B-Instruct-2507 NVFP4 (non-thinking) | 20.9% | 53.8% | 80.4% | 65.3 |
 | gpt-oss-120b | 15.6% | 53.3% | 91.6% | 55.6 |
