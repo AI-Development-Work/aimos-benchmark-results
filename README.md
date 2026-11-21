@@ -34,6 +34,7 @@ the hardware config and date it was run under.
 | DeepSeek-V4.1-Flash-1017 (thinking ON) | 37.8% | **85.8%** | 98.7% | 1109.5 |
 | Qwen3.8-27B FP8 (thinking ON) | 32.0% | 69.3% | 100% | 417.1 |
 | DeepSeek-V4.1-Flash-1017 (thinking OFF) | 32.0% | 68.0% | n/a | 153.1 |
+| Qwen3-235B-A22B-Instruct-2507 NVFP4 (non-thinking) | 20.9% | 53.8% | n/a | 65.3 |
 | gpt-oss-120b | 15.6% | 53.3% | 91.6% | 55.6 |
 | Qwen3.8-27B FP8 (thinking OFF) | 16.0% | 50.7% | n/a | 108.4 |
 | Qwen3.8-27B full precision BF16 (thinking OFF) | 17.3% | 50.2% | n/a | 171.2 |
