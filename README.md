@@ -9,28 +9,28 @@ the hardware config and date it was run under.
 
 What developers actually care about is how fast they get working code, not how many tries a model needs. This table scores every run on **wall-clock time to a correct solution**: the share of all 225 exercises solved within 5, 10 and 30 minutes of starting, all tries included. The standard leaderboard number (pass within 2 tries) is shown alongside for comparison.
 
-| Run | Leaderboard score (2 tries) | Solved (final) | Median time to solve | Solved within 5 min | within 10 min | within 30 min |
-|---|---|---|---|---|---|---|
-| **DeepSeek-V4.1-Flash (2-bit), thinking OFF — retry run, 2 GPUs** | 68.9% | **92.0%** | 0.8 min | **88.4%** | **90.7%** | **92.0%** |
-| DeepSeek-V4.1-Flash, thinking OFF — retry run (up to 10 tries), 1 GPU + RAM | 72.0% | **92.0%** | 1.6 min | **78.7%** | **89.8%** | 91.6% |
-| **Qwen3.8-Flash-Next Q8_0 on Strata, thinking OFF — retry run (up to 10 tries), 1 GPU + RAM** | 73.8% | 89.8% | **0.2 min** | 89.8% | 89.8% | 89.8% |
-| **Qwen3.8-Flash-Next Q8_0 on Basalt, thinking OFF — retry run (up to 10 tries), 1 GPU + RAM** | 75.1% | **90.7%** | **0.2 min** | 90.7% | 90.7% | 90.7% |
-| Qwen3.8-27B FP8, thinking OFF — retry run (up to 10 tries) | 48.0% | 84.4% | 1.1 min | 74.7% | 82.7% | 84.4% |
-| DeepSeek-V4.1-Flash, thinking ON (2 tries) | **85.8%** | 85.8% | 8.8 min | 30.2% | 45.8% | 73.8% |
-| Qwen3.5-397B-A17B Q4_K_M, thinking OFF (2 tries) | 84.4% | 84.4% | 6.2 min | 33.8% | 63.6% | 79.1% |
-| Qwen3.8-27B BF16 (16-bit), thinking ON (2 tries) | 75.1% | 75.1% | 7.3 min | 27.1% | 45.3% | 68.4% |
-| Qwen3.8-Flash-Next Q8_0 on Strata, thinking OFF (2 tries), 1 GPU + RAM | 74.2% | 74.2% | 0.2 min | 74.2% | 74.2% | 74.2% |
-| Qwen3.8-27B NVFP4 (4-bit), thinking ON (2 tries) | 71.1% | 71.1% | 3.3 min | 42.7% | 63.6% | 68.9% |
-| Qwen3.8-27B FP8, thinking ON (2 tries) | 69.3% | 69.3% | 4.0 min | 39.1% | 53.3% | 68.9% |
-| DeepSeek-V4.1-Flash (2-bit), thinking OFF (2 tries), 2 GPUs | 69.3% | 69.3% | 0.6 min | 69.3% | 69.3% | 69.3% |
-| DeepSeek-V4.1-Flash, thinking OFF (2 tries), 1 GPU + RAM | 68.0% | 68.0% | 1.7 min | 61.3% | 67.1% | 68.0% |
-| Qwen3-235B-A22B-Instruct-2507 NVFP4 (2 tries) | 53.8% | 53.8% | 0.7 min | 53.3% | 53.8% | 53.8% |
-| gpt-oss-120b (2 tries) | 53.3% | 53.3% | 0.7 min | 52.4% | 52.9% | 53.3% |
-| Qwen3.8-27B FP8, thinking OFF (2 tries) | 50.7% | 50.7% | 0.8 min | 48.4% | 50.7% | 50.7% |
-| Qwen3.8-27B BF16, thinking OFF (2 tries) | 50.2% | 50.2% | 1.3 min | 43.1% | 48.4% | 50.2% |
-| Qwen3.8-27B NVFP4 (4-bit), thinking OFF (2 tries) | 42.7% | 42.7% | 0.5 min | 42.2% | 42.7% | 42.7% |
-| Mistral Small 4 119B NVFP4 (2 tries) | 15.1% | 15.1% | 0.2 min | 15.1% | 15.1% | 15.1% |
-| Devstral Small 2 24B (2 tries) | 13.8% | 13.8% | 0.4 min | 13.8% | 13.8% | 13.8% |
+| Run | Engine | Hardware | Leaderboard score (2 tries) | Solved (final) | Median time to solve | Solved within 5 min | within 10 min | within 30 min |
+|---|---|---|---|---|---|---|---|---|
+| **DeepSeek V4.1-Flash (2-bit), thinking OFF — retry run** | Maya | 2 GPUs | 68.9% | 92.0% | 0.8 min | 88.4% | 90.7% | 92.0% |
+| DeepSeek V4.1-Flash (2-bit), thinking OFF — retry run | Maya | 1 GPU + RAM | 72.0% | 92.0% | 1.6 min | 78.7% | 89.8% | 91.6% |
+| **Qwen3.8-Flash-Next Q8_0, thinking OFF — retry run** | Basalt | 1 GPU + RAM | 75.1% | 90.7% | 0.2 min | 90.7% | 90.7% | 90.7% |
+| Qwen3.8-Flash-Next Q8_0, thinking OFF — retry run | Strata | 1 GPU + RAM | 73.8% | 89.8% | 0.2 min | 89.8% | 89.8% | 89.8% |
+| Qwen3.8-27B FP8, thinking OFF — retry run | vLLM | 1 GPU | 48.0% | 84.4% | 1.1 min | 74.7% | 82.7% | 84.4% |
+| DeepSeek V4.1-Flash (2-bit), thinking ON | Maya | 1 GPU + RAM | 85.8% | 85.8% | 8.8 min | 30.2% | 45.8% | 73.8% |
+| Qwen3.5-397B-A17B Q4_K_M, thinking OFF | llama.cpp | 2 GPUs + RAM | 84.4% | 84.4% | 6.2 min | 33.8% | 63.6% | 79.1% |
+| Qwen3.8-27B BF16 (16-bit), thinking ON | vLLM | 1 GPU | 75.1% | 75.1% | 7.3 min | 27.1% | 45.3% | 68.4% |
+| Qwen3.8-Flash-Next Q8_0, thinking OFF | Strata | 1 GPU + RAM | 74.2% | 74.2% | 0.2 min | 74.2% | 74.2% | 74.2% |
+| Qwen3.8-27B NVFP4 (4-bit), thinking ON | vLLM | 1 GPU | 71.1% | 71.1% | 3.3 min | 42.7% | 63.6% | 68.9% |
+| Qwen3.8-27B FP8, thinking ON | vLLM | 1 GPU | 69.3% | 69.3% | 4.0 min | 39.1% | 53.3% | 68.9% |
+| DeepSeek V4.1-Flash (2-bit), thinking OFF | Maya | 2 GPUs | 69.3% | 69.3% | 0.6 min | 69.3% | 69.3% | 69.3% |
+| DeepSeek V4.1-Flash (2-bit), thinking OFF | Maya | 1 GPU + RAM | 68.0% | 68.0% | 1.7 min | 61.3% | 67.1% | 68.0% |
+| Qwen3-235B-A22B-Instruct-2507 NVFP4 | vLLM | 2 GPUs | 53.8% | 53.8% | 0.7 min | 53.3% | 53.8% | 53.8% |
+| gpt-oss-120b | vLLM | 1 GPU | 53.3% | 53.3% | 0.7 min | 52.4% | 52.9% | 53.3% |
+| Qwen3.8-27B FP8, thinking OFF | vLLM | 1 GPU | 50.7% | 50.7% | 0.8 min | 48.4% | 50.7% | 50.7% |
+| Qwen3.8-27B BF16, thinking OFF | vLLM | 1 GPU | 50.2% | 50.2% | 1.3 min | 43.1% | 48.4% | 50.2% |
+| Qwen3.8-27B NVFP4 (4-bit), thinking OFF | vLLM | 1 GPU | 42.7% | 42.7% | 0.5 min | 42.2% | 42.7% | 42.7% |
+| Mistral Small 4 119B NVFP4 | vLLM | 1 GPU | 15.1% | 15.1% | 0.2 min | 15.1% | 15.1% | 15.1% |
+| Devstral Small 2 24B | vLLM | 1 GPU | 13.8% | 13.8% | 0.4 min | 13.8% | 13.8% | 13.8% |
 
 **2 GPUs vs 1:** the same 2-bit DeepSeek build moved from 1 GPU + system RAM to fully on both GPUs went from 78.7% to 88.4% solved within 5 minutes, with the median time to solve halved (1.6 → 0.8 min), at the same final accuracy (92.0%).
 
