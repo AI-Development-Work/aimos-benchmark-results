@@ -45,6 +45,7 @@ Founder priority: the measure that matters is wall-clock time to a correct solut
 | Run | Benchmark (2 tries) | Solved (final) | Median time to solve | Solved within 5 min | within 10 min | within 30 min |
 |---|---|---|---|---|---|---|
 | DeepSeek-V4.1-Flash thinking OFF — retry run (up to 10 tries; separate run) | 72.0% | 92.0% | 1.6 min | 78.7% | 89.8% | 91.6% |
+| Qwen3.8-Flash-Next Q8_0 on Strata, thinking OFF — retry run (up to 10 tries; separate run) | 73.8% | 89.8% | 0.2 min | 89.8% | 89.8% | 89.8% |
 | Qwen3.8-27B FP8 thinking OFF — retry run (up to 10 tries; separate run) | 48.0% | 84.4% | 1.1 min | 74.7% | 82.7% | 84.4% |
 | DeepSeek-V4.1-Flash thinking ON, 2 tries | 85.8% | 85.8% | 8.8 min | 30.2% | 45.8% | 73.8% |
 | Qwen3.5-397B-A17B Q4_K_M thinking OFF, 2 tries | 84.4% | 84.4% | 6.2 min | 33.8% | 63.6% | 79.1% |
@@ -109,3 +110,15 @@ Reading: a fast non-thinking model in a test-feedback loop reaches a correct sol
 - Time to solution: median 3.3 min; solved within 5 min 42.7%, within 10 min 63.6%, within 30 min 68.9%.
 - Speed: wall clock 22:44:02 to 05:27:24 UTC (6h43m).
 - 4-bit vs 8-bit vs 16-bit Qwen3.8-27B: thinking ON, NVFP4 71.1% vs FP8 69.3% (median 3.3 vs 4.0 min; within 5 min 42.7% vs 39.1%; within 10 min 63.6% vs 53.3%; within 30 min 68.9% both). Thinking OFF: NVFP4 42.7%, FP8 50.7%, BF16 50.2%. With thinking on, 4-bit matched or beat FP8 and was faster; with thinking off it lost about 8 points. BF16 thinking ON: pending (still running).
+
+
+## Qwen3.8-Flash-Next Q8_0 on Strata 0.1.64 — thinking OFF, retry run (2026-11-22)
+
+- Setup: Qwen3.8-Flash-Next Unsloth Q8_0 GGUF (54.4 GB), Strata engine 0.1.64 (prebuilt, CUDA), GPU 0 only plus system RAM, 64k context, one request at a time (`--parallel 1`, so 1 benchmark thread), vision off, thinking OFF per request via the Aider settings file. Aider Polyglot 225, diff format, retry run (`--tries 10`). Run folder `2026-11-22-07-02-11--until10-qfn-strata-diff-nothink`.
+- Speed test (2K-token prompt): prefill about 1.4-1.5K tok/s, decode about 190-206 tok/s.
+- Result (225 of 225): solved 89.8% (202/225); first try 78 (34.7%); the first two tries alone gave 73.8%. Error outputs 71, malformed 10, exhausted context 3, test timeouts 14. Per language solved/total: cpp 23/26, go 35/39, java 38/47, javascript 44/49, python 34/34, rust 28/30. (Per-language counts are from the aggregation script's final pass/fail, which counts any pass within the 10 tries.)
+- Time to solution: median 0.2 min; solved within 5, 10 and 30 min all 89.8% (every solve finished inside 5 minutes; the remaining 10.2% were never solved).
+- Speed: wall clock 07:01:56 to 10:25:50 UTC (3h24m); total duration 2.29 h, average 36.7 s per exercise; 6.99 M prompt tokens, 0.99 M completion tokens.
+- Comparison with the earlier best retry run, Qwen3.8-27B FP8 thinking OFF (`until10-qwen38-fp8-diff-nothink`): 84.4% solved, 2-try 48.0%, median 1.1 min. Flash-Next on Strata is now the best time-to-solution result on this hardware (89.8% solved, 73.8% in the first two tries, median 0.2 min). DeepSeek-V4.1-Flash 2-bit still solves more in total (92.0%) on a retry run.
+- License: Qwen Community License 1.0. Commercial use is allowed; offering the model as an AI work assistant or model-as-a-service to third parties needs a separate license.
+- Next: the standard 2-try run (`full-qfn-strata-diff-nothink`) started 10:47 UTC on the same server and settings.
