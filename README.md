@@ -33,6 +33,9 @@ What developers actually care about is how fast they get working code, not how m
 
 *How measured:* per-exercise wall-clock time, 4 exercises running in parallel on the same hardware (so times are under load), self-hosted on a Dell T7920 with 2× RTX PRO 6000 Blackwell Max-Q. Script and raw results: see [RESULTS.md](RESULTS.md).
 
+
+> **Engines:** how llama.cpp, vLLM, SGLang, Maya, Strata and Basalt compare, and how our own engine, **Caldera**, will optimize for time to the right answer — see [ENGINES.md](ENGINES.md).
+
 ## Methodology
 
 - Benchmark: Aider Polyglot — 225 coding exercises (from [Exercism](https://exercism.org)),
