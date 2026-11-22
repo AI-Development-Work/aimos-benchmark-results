@@ -48,6 +48,7 @@ Founder priority: the measure that matters is wall-clock time to a correct solut
 | Qwen3.8-27B FP8 thinking OFF — retry run (up to 10 tries; separate run) | 48.0% | 84.4% | 1.1 min | 74.7% | 82.7% | 84.4% |
 | DeepSeek-V4.1-Flash thinking ON, 2 tries | 85.8% | 85.8% | 8.8 min | 30.2% | 45.8% | 73.8% |
 | Qwen3.5-397B-A17B Q4_K_M thinking OFF, 2 tries | 84.4% | 84.4% | 6.2 min | 33.8% | 63.6% | 79.1% |
+| Qwen3.8-27B NVFP4 thinking ON, 2 tries | 71.1% | 71.1% | 3.3 min | 42.7% | 63.6% | 68.9% |
 | Qwen3.8-27B FP8 thinking ON, 2 tries | 69.3% | 69.3% | 4.0 min | 39.1% | 53.3% | 68.9% |
 | DeepSeek-V4.1-Flash thinking OFF — standard benchmark run (2 tries) | 68.0% | 68.0% | 1.7 min | 61.3% | 67.1% | 68.0% |
 | Qwen3-235B-A22B-Instruct-2507 NVFP4, 2 tries | 53.8% | 53.8% | 0.7 min | 53.3% | 53.8% | 53.8% |
@@ -99,3 +100,12 @@ Reading: a fast non-thinking model in a test-feedback loop reaches a correct sol
 - Result (225 of 225, diff, 4 sessions): first try 38 (16.9%), within two tries 96 (42.7%), well-formed 90.7% (25 malformed, 26 error outputs, 1 context exhaustion, 2 test timeouts). Per language: cpp 11/26, go 13/39, java 17/47, javascript 24/49, python 17/34, rust 14/30.
 - Speed: wall clock 1.23 h (21:23–22:37 UTC); avg 72.5 s, median 43.9 s per exercise; ~78 solved per hour. Tokens 3.82 M prompt, 0.65 M completion. Median time to solve 0.5 min.
 - Precision comparison, thinking OFF: BF16 50.2%, FP8 50.7%, NVFP4 42.7% — 4-bit costs about 8 points on this 27B dense model, while 8-bit costs nothing measurable. It also produced more malformed edits (25 vs ~0 for FP8).
+
+
+## Qwen3.8-27B NVFP4 (4-bit) — thinking ON (2026-11-22)
+
+- Setup: nvidia/Qwen3.8-27B-NVFP4, vLLM (image vllm/vllm-openai:qwen38), GPU 0 only, thinking ON (`--reasoning-parser qwen3`), Aider Polyglot 225, diff format, 2 tries. Run folder `2026-11-21-22-44-16--full-qwen38-nvfp4-diff-thinking` (run name `full-qwen38-nvfp4-diff-thinking`).
+- Result (225 of 225): solved 71.1% (160/225), 2-try 71.1%. Error outputs 4, malformed 3, exhausted context 1, test timeouts 0. Per language passed/total: cpp 17/26, go 27/39, java 28/47, javascript 37/49, python 28/34, rust 23/30.
+- Time to solution: median 3.3 min; solved within 5 min 42.7%, within 10 min 63.6%, within 30 min 68.9%.
+- Speed: wall clock 22:44:02 to 05:27:24 UTC (6h43m).
+- 4-bit vs 8-bit vs 16-bit Qwen3.8-27B: thinking ON, NVFP4 71.1% vs FP8 69.3% (median 3.3 vs 4.0 min; within 5 min 42.7% vs 39.1%; within 10 min 63.6% vs 53.3%; within 30 min 68.9% both). Thinking OFF: NVFP4 42.7%, FP8 50.7%, BF16 50.2%. With thinking on, 4-bit matched or beat FP8 and was faster; with thinking off it lost about 8 points. BF16 thinking ON: pending (still running).
