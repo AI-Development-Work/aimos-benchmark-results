@@ -17,6 +17,7 @@ What developers actually care about is how fast they get working code, not how m
 | Qwen3.8-27B FP8, thinking OFF — retry run (up to 10 tries) | 48.0% | 84.4% | 1.1 min | 74.7% | 82.7% | 84.4% |
 | DeepSeek-V4.1-Flash, thinking ON (2 tries) | **85.8%** | 85.8% | 8.8 min | 30.2% | 45.8% | 73.8% |
 | Qwen3.5-397B-A17B Q4_K_M, thinking OFF (2 tries) | 84.4% | 84.4% | 6.2 min | 33.8% | 63.6% | 79.1% |
+| Qwen3.8-27B BF16 (16-bit), thinking ON (2 tries) | 75.1% | 75.1% | 7.3 min | 27.1% | 45.3% | 68.4% |
 | Qwen3.8-Flash-Next Q8_0 on Strata, thinking OFF (2 tries), 1 GPU + RAM | 74.2% | 74.2% | 0.2 min | 74.2% | 74.2% | 74.2% |
 | Qwen3.8-27B NVFP4 (4-bit), thinking ON (2 tries) | 71.1% | 71.1% | 3.3 min | 42.7% | 63.6% | 68.9% |
 | Qwen3.8-27B FP8, thinking ON (2 tries) | 69.3% | 69.3% | 4.0 min | 39.1% | 53.3% | 68.9% |
@@ -32,7 +33,7 @@ What developers actually care about is how fast they get working code, not how m
 
 **2 GPUs vs 1:** the same 2-bit DeepSeek build moved from 1 GPU + system RAM to fully on both GPUs went from 78.7% to 88.4% solved within 5 minutes, with the median time to solve halved (1.6 → 0.8 min), at the same final accuracy (92.0%).
 
-**4-bit vs 8-bit vs 16-bit Qwen3.8-27B:** with thinking ON, 4-bit NVFP4 matched or beat FP8 (71.1% vs 69.3%) and was faster (median 3.3 vs 4.0 min; 42.7% vs 39.1% solved within 5 min). With thinking OFF, 4-bit lost about 8 points (42.7% vs 50.7% FP8, 50.2% BF16). BF16 thinking ON: pending (run in progress).
+**4-bit vs 8-bit vs 16-bit Qwen3.8-27B:** with thinking ON, 4-bit NVFP4 matched or beat FP8 (71.1% vs 69.3%) and was faster (median 3.3 vs 4.0 min; 42.7% vs 39.1% solved within 5 min). With thinking OFF, 4-bit lost about 8 points (42.7% vs 50.7% FP8, 50.2% BF16). With thinking ON, 16-bit BF16 was the most accurate (75.1%, about 4-6 points above 4-bit and 8-bit) but about 2x slower to a correct answer (median 7.3 min vs 3.3 min for 4-bit and 4.0 min for 8-bit; 27.1% solved within 5 min vs 42.7% and 39.1%); 4-bit is the fastest.
 
 **What it shows:** a fast model that retries against test feedback gets to working code sooner than a slow "thinking" model. DeepSeek with thinking off and retries solves 79% of exercises within 5 minutes; the same model with thinking on solves 30% in that time, despite the higher leaderboard score. The "retry run" rows are separate runs from the standard 2-try runs of the same model.
 

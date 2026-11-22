@@ -49,6 +49,7 @@ Founder priority: the measure that matters is wall-clock time to a correct solut
 | Qwen3.8-27B FP8 thinking OFF — retry run (up to 10 tries; separate run) | 48.0% | 84.4% | 1.1 min | 74.7% | 82.7% | 84.4% |
 | DeepSeek-V4.1-Flash thinking ON, 2 tries | 85.8% | 85.8% | 8.8 min | 30.2% | 45.8% | 73.8% |
 | Qwen3.5-397B-A17B Q4_K_M thinking OFF, 2 tries | 84.4% | 84.4% | 6.2 min | 33.8% | 63.6% | 79.1% |
+| Qwen3.8-27B BF16 thinking ON, 2 tries | 75.1% | 75.1% | 7.3 min | 27.1% | 45.3% | 68.4% |
 | Qwen3.8-27B NVFP4 thinking ON, 2 tries | 71.1% | 71.1% | 3.3 min | 42.7% | 63.6% | 68.9% |
 | Qwen3.8-27B FP8 thinking ON, 2 tries | 69.3% | 69.3% | 4.0 min | 39.1% | 53.3% | 68.9% |
 | DeepSeek-V4.1-Flash thinking OFF — standard benchmark run (2 tries) | 68.0% | 68.0% | 1.7 min | 61.3% | 67.1% | 68.0% |
@@ -109,7 +110,7 @@ Reading: a fast non-thinking model in a test-feedback loop reaches a correct sol
 - Result (225 of 225): solved 71.1% (160/225), 2-try 71.1%. Error outputs 4, malformed 3, exhausted context 1, test timeouts 0. Per language passed/total: cpp 17/26, go 27/39, java 28/47, javascript 37/49, python 28/34, rust 23/30.
 - Time to solution: median 3.3 min; solved within 5 min 42.7%, within 10 min 63.6%, within 30 min 68.9%.
 - Speed: wall clock 22:44:02 to 05:27:24 UTC (6h43m).
-- 4-bit vs 8-bit vs 16-bit Qwen3.8-27B: thinking ON, NVFP4 71.1% vs FP8 69.3% (median 3.3 vs 4.0 min; within 5 min 42.7% vs 39.1%; within 10 min 63.6% vs 53.3%; within 30 min 68.9% both). Thinking OFF: NVFP4 42.7%, FP8 50.7%, BF16 50.2%. With thinking on, 4-bit matched or beat FP8 and was faster; with thinking off it lost about 8 points. BF16 thinking ON: pending (still running).
+- 4-bit vs 8-bit vs 16-bit Qwen3.8-27B: thinking ON, NVFP4 71.1% vs FP8 69.3% (median 3.3 vs 4.0 min; within 5 min 42.7% vs 39.1%; within 10 min 63.6% vs 53.3%; within 30 min 68.9% both). Thinking OFF: NVFP4 42.7%, FP8 50.7%, BF16 50.2%. With thinking on, 4-bit matched or beat FP8 and was faster; with thinking off it lost about 8 points. BF16 thinking ON: 75.1% (median 7.3 min), see the BF16 section below.
 
 
 ## Qwen3.8-Flash-Next Q8_0 on Strata 0.1.64 — thinking OFF, retry run (2026-11-22)
@@ -131,3 +132,13 @@ Reading: a fast non-thinking model in a test-feedback loop reaches a correct sol
 - Time to solution: median 0.2 min; solved within 5, 10 and 30 min all 74.2%.
 - Speed: wall clock 10:47:30 to 12:31:03 UTC (1h44m); total duration 1.36 h, average 21.7 s per exercise; 2.87 M prompt tokens, 0.57 M completion tokens.
 - Comparison: the 2-try run reproduces the first-two-tries number of the retry run (74.2% vs 73.8%), so the retry run's 89.8% is the same model given up to 10 tries. Thinking ON on the same server is next (`full-qfn-strata-diff-thinking`).
+
+
+## Qwen3.8-27B BF16 (16-bit) — thinking ON (2026-11-22)
+
+- Setup: Qwen3.8-27B BF16 (full precision), vLLM, GPU 1 only, thinking ON, Aider Polyglot 225, diff format, 2 tries. Run folder `2026-11-22-02-58-31--full-qwen38-bf16-diff-thinking` (run name `full-qwen38-bf16-diff-thinking`).
+- Run history: started 02:58 UTC, interrupted at 05:36 UTC after 59 exercises by a container-name collision, then resumed with `--cont` from 06:32 to 19:12 UTC. Total active time about 15h20m.
+- Result (225 of 225): solved 75.1% (169/225); first try 74 (32.9%). Error outputs 7, malformed 2, exhausted context 1, test timeouts 0. Per language passed/total: cpp 20/26, go 28/39, java 31/47, javascript 40/49, python 25/34, rust 25/30.
+- Time to solution: median 7.3 min; solved within 5 min 27.1%, within 10 min 45.3%, within 30 min 68.4%.
+- Speed: total per-exercise duration 57.5 h summed over exercises (average 920.7 s per exercise); 2.65 M prompt tokens, 3.29 M completion tokens.
+- 4-bit vs 8-bit vs 16-bit Qwen3.8-27B, thinking ON: NVFP4 71.1% (median 3.3 min), FP8 69.3% (4.0 min), BF16 75.1% (7.3 min). 16-bit is about 4-6 points more accurate but about 2x slower to a correct answer; 4-bit is the fastest.
