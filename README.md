@@ -17,6 +17,7 @@ What developers actually care about is how fast they get working code, not how m
 | Qwen3.8-27B FP8, thinking OFF — retry run (up to 10 tries) | 48.0% | 84.4% | 1.1 min | 74.7% | 82.7% | 84.4% |
 | DeepSeek-V4.1-Flash, thinking ON (2 tries) | **85.8%** | 85.8% | 8.8 min | 30.2% | 45.8% | 73.8% |
 | Qwen3.5-397B-A17B Q4_K_M, thinking OFF (2 tries) | 84.4% | 84.4% | 6.2 min | 33.8% | 63.6% | 79.1% |
+| Qwen3.8-Flash-Next Q8_0 on Strata, thinking OFF (2 tries), 1 GPU + RAM | 74.2% | 74.2% | 0.2 min | 74.2% | 74.2% | 74.2% |
 | Qwen3.8-27B NVFP4 (4-bit), thinking ON (2 tries) | 71.1% | 71.1% | 3.3 min | 42.7% | 63.6% | 68.9% |
 | Qwen3.8-27B FP8, thinking ON (2 tries) | 69.3% | 69.3% | 4.0 min | 39.1% | 53.3% | 68.9% |
 | DeepSeek-V4.1-Flash (2-bit), thinking OFF (2 tries), 2 GPUs | 69.3% | 69.3% | 0.6 min | 69.3% | 69.3% | 69.3% |
@@ -35,7 +36,7 @@ What developers actually care about is how fast they get working code, not how m
 
 **What it shows:** a fast model that retries against test feedback gets to working code sooner than a slow "thinking" model. DeepSeek with thinking off and retries solves 79% of exercises within 5 minutes; the same model with thinking on solves 30% in that time, despite the higher leaderboard score. The "retry run" rows are separate runs from the standard 2-try runs of the same model.
 
-**Flash-Next on Strata:** Qwen3.8-Flash-Next Q8_0 on the Strata engine (GPU 0 plus system RAM, 64k context, thinking OFF) solved 89.8% with a median of 0.2 min, and every solve landed inside 5 minutes. That is the best time-to-solution median in the table, ahead of the earlier best retry run on Qwen3.8-27B FP8 (84.4% solved, median 1.1 min), though DeepSeek 2-bit still solves more in total (92.0%). Its standard 2-try run is in progress.
+**Flash-Next on Strata:** Qwen3.8-Flash-Next Q8_0 on the Strata engine (GPU 0 plus system RAM, 64k context, thinking OFF) solved 89.8% with a median of 0.2 min, and every solve landed inside 5 minutes. That is the best time-to-solution median in the table, ahead of the earlier best retry run on Qwen3.8-27B FP8 (84.4% solved, median 1.1 min), though DeepSeek 2-bit still solves more in total (92.0%). Its standard 2-try run reproduces the retry run's first-two-tries number (74.2% vs 73.8%) in 1h44m instead of 3h24m.
 
 *How measured:* per-exercise wall-clock time, 4 exercises running in parallel on the same hardware (so times are under load), self-hosted on a Dell T7920 with 2× RTX PRO 6000 Blackwell Max-Q. Script and raw results: see [RESULTS.md](RESULTS.md).
 

@@ -121,4 +121,13 @@ Reading: a fast non-thinking model in a test-feedback loop reaches a correct sol
 - Speed: wall clock 07:01:56 to 10:25:50 UTC (3h24m); total duration 2.29 h, average 36.7 s per exercise; 6.99 M prompt tokens, 0.99 M completion tokens.
 - Comparison with the earlier best retry run, Qwen3.8-27B FP8 thinking OFF (`until10-qwen38-fp8-diff-nothink`): 84.4% solved, 2-try 48.0%, median 1.1 min. Flash-Next on Strata is now the best time-to-solution result on this hardware (89.8% solved, 73.8% in the first two tries, median 0.2 min). DeepSeek-V4.1-Flash 2-bit still solves more in total (92.0%) on a retry run.
 - License: Qwen Community License 1.0. Commercial use is allowed; offering the model as an AI work assistant or model-as-a-service to third parties needs a separate license.
-- Next: the standard 2-try run (`full-qfn-strata-diff-nothink`) started 10:47 UTC on the same server and settings.
+- Next: the standard 2-try run (`full-qfn-strata-diff-nothink`) is recorded below.
+
+
+## Qwen3.8-Flash-Next Q8_0 on Strata 0.1.64 — thinking OFF, standard 2-try run (2026-11-22)
+
+- Setup: same as the retry run above (Strata 0.1.64 prebuilt, GPU 0 plus system RAM, 64k context, 1 thread, thinking OFF). Aider Polyglot 225, diff format, standard 2 tries. Run folder `2026-11-22-10-47-45--full-qfn-strata-diff-nothink`.
+- Result (225 of 225): passed within two tries 74.2% (167/225); first try 79 (35.1%). Error outputs 12, malformed 10, exhausted context 0, test timeouts 2. Per language passed/total: cpp 20/26, go 27/39, java 32/47, javascript 37/49, python 31/34, rust 20/30.
+- Time to solution: median 0.2 min; solved within 5, 10 and 30 min all 74.2%.
+- Speed: wall clock 10:47:30 to 12:31:03 UTC (1h44m); total duration 1.36 h, average 21.7 s per exercise; 2.87 M prompt tokens, 0.57 M completion tokens.
+- Comparison: the 2-try run reproduces the first-two-tries number of the retry run (74.2% vs 73.8%), so the retry run's 89.8% is the same model given up to 10 tries. Thinking ON on the same server is next (`full-qfn-strata-diff-thinking`).
