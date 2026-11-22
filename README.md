@@ -14,6 +14,7 @@ What developers actually care about is how fast they get working code, not how m
 | **DeepSeek-V4.1-Flash (2-bit), thinking OFF — retry run, 2 GPUs** | 68.9% | **92.0%** | 0.8 min | **88.4%** | **90.7%** | **92.0%** |
 | DeepSeek-V4.1-Flash, thinking OFF — retry run (up to 10 tries), 1 GPU + RAM | 72.0% | **92.0%** | 1.6 min | **78.7%** | **89.8%** | 91.6% |
 | **Qwen3.8-Flash-Next Q8_0 on Strata, thinking OFF — retry run (up to 10 tries), 1 GPU + RAM** | 73.8% | 89.8% | **0.2 min** | 89.8% | 89.8% | 89.8% |
+| **Qwen3.8-Flash-Next Q8_0 on Basalt, thinking OFF — retry run (up to 10 tries), 1 GPU + RAM** | 75.1% | **90.7%** | **0.2 min** | 90.7% | 90.7% | 90.7% |
 | Qwen3.8-27B FP8, thinking OFF — retry run (up to 10 tries) | 48.0% | 84.4% | 1.1 min | 74.7% | 82.7% | 84.4% |
 | DeepSeek-V4.1-Flash, thinking ON (2 tries) | **85.8%** | 85.8% | 8.8 min | 30.2% | 45.8% | 73.8% |
 | Qwen3.5-397B-A17B Q4_K_M, thinking OFF (2 tries) | 84.4% | 84.4% | 6.2 min | 33.8% | 63.6% | 79.1% |
@@ -36,6 +37,8 @@ What developers actually care about is how fast they get working code, not how m
 **4-bit vs 8-bit vs 16-bit Qwen3.8-27B:** with thinking ON, 4-bit NVFP4 matched or beat FP8 (71.1% vs 69.3%) and was faster (median 3.3 vs 4.0 min; 42.7% vs 39.1% solved within 5 min). With thinking OFF, 4-bit lost about 8 points (42.7% vs 50.7% FP8, 50.2% BF16). With thinking ON, 16-bit BF16 was the most accurate (75.1%, about 4-6 points above 4-bit and 8-bit) but about 2x slower to a correct answer (median 7.3 min vs 3.3 min for 4-bit and 4.0 min for 8-bit; 27.1% solved within 5 min vs 42.7% and 39.1%); 4-bit is the fastest.
 
 **What it shows:** a fast model that retries against test feedback gets to working code sooner than a slow "thinking" model. DeepSeek with thinking off and retries solves 79% of exercises within 5 minutes; the same model with thinking on solves 30% in that time, despite the higher leaderboard score. The "retry run" rows are separate runs from the standard 2-try runs of the same model.
+
+**Strata vs Basalt, same model:** the same Qwen3.8-Flash-Next Q8_0 weights on Basalt v0.5.5 (GPU 1 plus RAM) solved 90.7% (75.1% in the first two tries) in 2h40m, versus 89.8% (73.8%) in 3h24m on Strata — about 22% less wall clock with equal or better accuracy; decode ~224 vs ~190–206 tok/s.
 
 **Flash-Next on Strata:** Qwen3.8-Flash-Next Q8_0 on the Strata engine (GPU 0 plus system RAM, 64k context, thinking OFF) solved 89.8% with a median of 0.2 min, and every solve landed inside 5 minutes. That is the best time-to-solution median in the table, ahead of the earlier best retry run on Qwen3.8-27B FP8 (84.4% solved, median 1.1 min), though DeepSeek 2-bit still solves more in total (92.0%). Its standard 2-try run reproduces the retry run's first-two-tries number (74.2% vs 73.8%) in 1h44m instead of 3h24m.
 

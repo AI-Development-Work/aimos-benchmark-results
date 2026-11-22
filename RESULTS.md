@@ -46,6 +46,7 @@ Founder priority: the measure that matters is wall-clock time to a correct solut
 |---|---|---|---|---|---|---|
 | DeepSeek-V4.1-Flash thinking OFF — retry run (up to 10 tries; separate run) | 72.0% | 92.0% | 1.6 min | 78.7% | 89.8% | 91.6% |
 | Qwen3.8-Flash-Next Q8_0 on Strata, thinking OFF — retry run (up to 10 tries; separate run) | 73.8% | 89.8% | 0.2 min | 89.8% | 89.8% | 89.8% |
+| Qwen3.8-Flash-Next Q8_0 on Basalt, thinking OFF — retry run (up to 10 tries; separate run) | 75.1% | 90.7% | 0.2 min | 90.7% | 90.7% | 90.7% |
 | Qwen3.8-27B FP8 thinking OFF — retry run (up to 10 tries; separate run) | 48.0% | 84.4% | 1.1 min | 74.7% | 82.7% | 84.4% |
 | DeepSeek-V4.1-Flash thinking ON, 2 tries | 85.8% | 85.8% | 8.8 min | 30.2% | 45.8% | 73.8% |
 | Qwen3.5-397B-A17B Q4_K_M thinking OFF, 2 tries | 84.4% | 84.4% | 6.2 min | 33.8% | 63.6% | 79.1% |
@@ -133,6 +134,14 @@ Reading: a fast non-thinking model in a test-feedback loop reaches a correct sol
 - Speed: wall clock 10:47:30 to 12:31:03 UTC (1h44m); total duration 1.36 h, average 21.7 s per exercise; 2.87 M prompt tokens, 0.57 M completion tokens.
 - Comparison: the 2-try run reproduces the first-two-tries number of the retry run (74.2% vs 73.8%), so the retry run's 89.8% is the same model given up to 10 tries. Thinking ON on the same server is next (`full-qfn-strata-diff-thinking`).
 
+
+## Qwen3.8-Flash-Next Q8_0 on Basalt v0.5.5 — thinking OFF, retry run (2026-11-22)
+
+- Setup: same Unsloth Q8_0 weights converted to a 179 GiB `.basalt` pack; Basalt v0.5.5 prebuilt; GPU 1 only plus system RAM (92 GiB VRAM, 33 GiB RAM); 64k context; 1 thread; thinking OFF. Aider Polyglot 225, diff format, retry run (`--tries 10`). Run folder `2026-11-22-19-59-22--until10-qfn-basalt-diff-nothink`.
+- Wall clock 19:59 → 22:39 UTC (2h40m). Speed (~2k prompt, warm): prefill ~1.36k tok/s, decode ~224 tok/s.
+- Result: solved 90.7% (204/225); first try 38.2%; first two tries 75.1%; median time to solve 0.2 min; every solve within 5 minutes.
+- Per language (solved/total): cpp 24/26, go 34/39, java 41/47, javascript 43/49, python 34/34, rust 28/30. Error outputs 54, malformed 8, exhausted context 2, test timeouts 2.
+- Strata vs Basalt on the same model: Strata 89.8% (2-try 73.8%) in 3h24m; Basalt 90.7% (75.1%) in 2h40m — ~22% faster with equal or better accuracy.
 
 ## Qwen3.8-27B BF16 (16-bit) — thinking ON (2026-11-22)
 

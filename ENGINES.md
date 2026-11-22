@@ -35,4 +35,4 @@ Our benchmark results (see [README.md](README.md)) kept pointing at the same thi
 
 ## Status
 
-Next runs compare Qwen3.8-Flash-Next on Maya, Strata, Basalt and vLLM (NVFP4), same tests. Caldera's design will follow those results; its first version will likely be a fork of one of these engines rather than a from-scratch rewrite.
+First same-model result: Qwen3.8-Flash-Next Q8_0 retry run — Basalt 90.7% in 2h40m vs Strata 89.8% in 3h24m (see RESULTS.md). Next: Maya and vLLM (NVFP4), same tests. Caldera's design will follow those results; its first version will likely be a fork of one of these engines rather than a from-scratch rewrite.
