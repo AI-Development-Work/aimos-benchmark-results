@@ -143,6 +143,11 @@ Reading: a fast non-thinking model in a test-feedback loop reaches a correct sol
 - Per language (solved/total): cpp 24/26, go 34/39, java 41/47, javascript 43/49, python 34/34, rust 28/30. Error outputs 54, malformed 8, exhausted context 2, test timeouts 2.
 - Strata vs Basalt on the same model: Strata 89.8% (2-try 73.8%) in 3h24m; Basalt 90.7% (75.1%) in 2h40m — ~22% faster with equal or better accuracy.
 
+## Qwen3.8-Flash-Next Q8_0 on Basalt v0.5.5 — thinking OFF, standard 2-try run (2026-11-23)
+
+- Setup: same as the Basalt retry run (GPU 1 + RAM, 64k context, `--parallel 1`, 1 thread). Run folder `2026-11-22-23-41-45--full-qfn-basalt-diff-nothink`. Wall clock 23:41 → 01:21 UTC (1h40m).
+- Result: 72.0% within two tries, median time to solve 0.2 min. Strata's 2-try run on the same weights: 74.2% in 1h44m. The two engines are within run-to-run noise on 2-try accuracy (Basalt's retry run gave 75.1% in its first two tries); Basalt is slightly faster.
+
 ## Qwen3.8-27B BF16 (16-bit) — thinking ON (2026-11-22)
 
 - Setup: Qwen3.8-27B BF16 (full precision), vLLM, GPU 1 only, thinking ON, Aider Polyglot 225, diff format, 2 tries. Run folder `2026-11-22-02-58-31--full-qwen38-bf16-diff-thinking` (run name `full-qwen38-bf16-diff-thinking`).
