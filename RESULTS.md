@@ -161,6 +161,16 @@ Reading: a fast non-thinking model in a test-feedback loop reaches a correct sol
 - Reading: serving 4 requests at once gave no throughput gain and made each solve about 4× slower — each request drops to ~40 tok/s (~135 tok/s total) against 240–330 tok/s for one request with speculative decoding. On this engine, parallel attempts cost more than they return; an engine that keeps speculative decoding fast across several requests is an open gap.
 - Supporting measurements: speculative decoding (8-token drafts, 74–92% accepted) roughly doubles decode speed (132–141 → 238–328 tok/s). Time breakdown of a median 13.6 s solve: prompt reading 5.8 s, answer writing 6.0 s, tests about 2 s.
 
+## Laguna S 2.1 (Poolside) on vLLM, both GPUs (2026-11-23)
+
+- Setup: vLLM (`qwen38` image), tensor-parallel 2 on both GPUs, 131072 context, up to 4 concurrent requests, 4 benchmark threads, `poolside_v1` tool-call and reasoning parsers. NVFP4 load 505 s, about 91.5 GB VRAM per GPU, nothing in system RAM.
+- Speed (NVFP4, ~2k-token prompt, thinking off): prefill about 8.9k tok/s cold and up to 14k warm — the fastest prompt reading we have measured; decode 123 tok/s for one request, about 84 tok/s per request with 4 at once (about 334 tok/s total).
+- NVFP4 (4-bit), thinking OFF, `full-laguna-nvfp4-diff-nothink`: 44.4% (100/225) within two tries; median time to solve 0.3 min; wall clock 14:18 → 15:35 UTC (1h17m).
+- FP8, thinking OFF, `full-laguna-fp8-diff-nothink`: 46.7% (105/225); median 0.3 min; wall clock 18:17 → 19:16 UTC (59 min).
+- NVFP4, thinking ON, `full-laguna-nvfp4-diff-thinking`: stopped by our 20-hour rule — after 12 exercises (6 solved) it projected to 21 hours. Not a full result.
+- FP8, thinking ON: in progress at the time of writing.
+- Reading: very fast, but with thinking off it solves well under half the exercises, far below Qwen3.8-Flash-Next (72–74%) at similar per-exercise speed. 4-bit and 8-bit are within run-to-run variation of each other.
+
 ## Qwen3.8-Flash-Next NVFP4 (4-bit) on vLLM v0.34.0 — thinking OFF, both GPUs (2026-11-23)
 
 - Setup: nvidia/Qwen3.8-Flash-Next-NVFP4 (132.7 GB), vLLM v0.34.0, tensor-parallel 2 on both GPUs, `--engram-config '{"cpu_offload": true}'` (the n-gram table sits in system RAM, about 77 GiB), 64k context, 4 concurrent requests, 4 benchmark threads. The older `qwen38-flash-next` image could not load this checkpoint (`ngram_embedding.weight_scale`); v0.34.0 can. Load 517 s; about 86 GiB VRAM per GPU.

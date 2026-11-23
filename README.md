@@ -33,6 +33,8 @@ What developers actually care about is how fast they get working code, not how m
 | gpt-oss-120b | vLLM | 1 GPU | 53.3% | 53.3% | 0.7 min | 52.4% | 52.9% | 53.3% |
 | Qwen3.8-27B FP8, thinking OFF | vLLM | 1 GPU | 50.7% | 50.7% | 0.8 min | 48.4% | 50.7% | 50.7% |
 | Qwen3.8-27B BF16, thinking OFF | vLLM | 1 GPU | 50.2% | 50.2% | 1.3 min | 43.1% | 48.4% | 50.2% |
+| Laguna S 2.1 FP8, thinking OFF | vLLM | 2 GPUs | 46.7% | 46.7% | 0.3 min | 46.7% | 46.7% | 46.7% |
+| Laguna S 2.1 NVFP4 (4-bit), thinking OFF | vLLM | 2 GPUs | 44.4% | 44.4% | 0.3 min | 44.0% | 44.0% | 44.4% |
 | Qwen3.8-27B NVFP4 (4-bit), thinking OFF | vLLM | 1 GPU | 42.7% | 42.7% | 0.5 min | 42.2% | 42.7% | 42.7% |
 | Mistral Small 4 119B NVFP4 | vLLM | 1 GPU | 15.1% | 15.1% | 0.2 min | 15.1% | 15.1% | 15.1% |
 | Devstral Small 2 24B | vLLM | 1 GPU | 13.8% | 13.8% | 0.4 min | 13.8% | 13.8% | 13.8% |
