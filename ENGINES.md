@@ -24,6 +24,8 @@ Our benchmark results (see [README.md](README.md)) kept pointing at the same thi
 
 ## How Caldera will be different
 
+> **Other engines optimize a model. Caldera optimizes the solution:** a suite of models working together, measured by how fast a task ends in correct, tested code.
+
 **The goal is wall-clock time to the right answer — not tokens per second, and not the 2-try leaderboard score.** Every other engine here optimizes how fast a model *generates*. Caldera optimizes how fast a task gets *solved*: correct, tested code, measured as the share of tasks solved within 5, 10 and 30 minutes. Every design choice below serves that one number.
 
 **Headline metric:** median time to solve on Aider Polyglot (same model, same weights, same hardware), Caldera vs the best other engine — currently Basalt at 0.2 min (about 12 s) for Qwen3.8-Flash-Next. Total run time, 90th-percentile time to solve and solved per hour are reported alongside.
