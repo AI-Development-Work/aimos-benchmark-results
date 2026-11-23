@@ -29,7 +29,7 @@ Our benchmark results (see [README.md](README.md)) kept pointing at the same thi
 **Headline metric:** median time to solve on Aider Polyglot (same model, same weights, same hardware), Caldera vs the best other engine — currently Basalt at 0.2 min (about 12 s) for Qwen3.8-Flash-Next. Total run time, 90th-percentile time to solve and solved per hour are reported alongside.
 
 - **Blackwell only, tuned to the box it runs on:** Caldera requires an NVIDIA Blackwell GPU (native FP4/FP8 tensor cores) and drops pre-Blackwell code paths — but it is not locked to one card. At startup it probes the machine (GPU count and VRAM, PCIe generation and lanes per card, peer-to-peer/NVLink, system RAM size and bandwidth, NVMe) and plans for that configuration: which experts live on which GPU, what spills to RAM or SSD, KV-cache size, how many parallel attempts to run. Reference systems: our T7920 (2× RTX PRO 6000 Blackwell Max-Q, PCIe 3.0, 512 GB DDR4) and the planned next build (PCIe 5.0, ≥1.5 TB RAM); other Blackwell setups (RTX PRO 6000 Workstation, RTX 5090, mixed cards) should run correctly, just tuned by the same planner.
-- **Multi-model, not single-model:** Strata and Basalt each run one model. Caldera targets the family of large MoE coding models we actually benchmark (Qwen3.8-Flash-Next, DeepSeek, Qwen3.5, GLM, Kimi).
+- **A suite of models that work together, not one model:** Caldera loads a team — coder, primary reviewer, secondary reviewer, escalation model — keeps them resident across the machine's GPUs, and routes each task through them to optimize accuracy and median time to solve together. Strata and Basalt each run one model. First version: one scheduler and API in front of per-model backends (Basalt-derived for Qwen3.8-Flash-Next, Maya-derived for DeepSeek), then shared kernels, memory planning and prompt cache across the suite.
 - **Expert placement learned from coding work:** profile which experts our coding prompts actually use and keep those GPU-resident, instead of offloading by layer.
 - **Coding-calibrated quantization:** importance matrices built from coding prompts, not generic text.
 - **A built-in coder→reviewer cascade:** Qwen3.8-Flash-Next is the coder and the primary reviewer (fastest: ~240–330 tok/s on one GPU); DeepSeek-V4.1-Flash is the secondary reviewer, brought in when Qwen stalls (it solved 14 exercises Flash-Next never solved in 10 tries; together they cover 218/225 = 96.9%). Starting cascade, to be tuned in phase 2: tries 1–2 Qwen codes with test feedback; tries 3–4 Qwen reviews (diagnoses the failing test) and fixes; from try 5 DeepSeek reviews. The switch point is configurable.
@@ -38,5 +38,8 @@ Our benchmark results (see [README.md](README.md)) kept pointing at the same thi
 - **Benchmark-driven:** every change is measured with the harness in this repo (accuracy, time to solution, solved per hour), against the engines above, on the same model.
 
 ## Status
+
+Plan (2026-11-22): finish the benchmark queue (Flash-Next on Maya and vLLM NVFP4, Laguna, Qwen3-Coder-480B), then re-test every model on Caldera, then test the suite end to end (coder → Qwen review → DeepSeek review) against the single-model results.
+
 
 First same-model result: Qwen3.8-Flash-Next Q8_0 retry run — Basalt 90.7% in 2h40m vs Strata 89.8% in 3h24m (see RESULTS.md). Next: Maya and vLLM (NVFP4), same tests. Caldera's design will follow those results; its first version will likely be a fork of one of these engines rather than a from-scratch rewrite.
