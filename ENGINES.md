@@ -33,6 +33,7 @@ Our benchmark results (see [README.md](README.md)) kept pointing at the same thi
 - **Expert placement learned from coding work:** profile which experts our coding prompts actually use and keep those GPU-resident, instead of offloading by layer.
 - **Coding-calibrated quantization:** importance matrices built from coding prompts, not generic text.
 - **A built-in coder→reviewer cascade:** a fast coder attempts first; after repeated test failures the job escalates to a stronger model or reviewer — optimized for wall-clock time to a correct solution, not tokens per second.
+- **Prompt cache (required):** reuse the processed prompt across requests — any shared prefix, including checkpoints at the point where a retry's prompt diverges, which Basalt v0.5.5 cannot do (it reused 0 tokens on our retries). Paired with a harness that puts the stable parts of the prompt first.
 - **Faster retries, not just faster tokens:** run several attempts in parallel and keep the first that passes tests; reuse the prompt's processed context across retries instead of re-reading it.
 - **Benchmark-driven:** every change is measured with the harness in this repo (accuracy, time to solution, solved per hour), against the engines above, on the same model.
 
