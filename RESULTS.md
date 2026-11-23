@@ -161,6 +161,24 @@ Reading: a fast non-thinking model in a test-feedback loop reaches a correct sol
 - Reading: serving 4 requests at once gave no throughput gain and made each solve about 4× slower — each request drops to ~40 tok/s (~135 tok/s total) against 240–330 tok/s for one request with speculative decoding. On this engine, parallel attempts cost more than they return; an engine that keeps speculative decoding fast across several requests is an open gap.
 - Supporting measurements: speculative decoding (8-token drafts, 74–92% accepted) roughly doubles decode speed (132–141 → 238–328 tok/s). Time breakdown of a median 13.6 s solve: prompt reading 5.8 s, answer writing 6.0 s, tests about 2 s.
 
+## Prompt-cache experiments on Qwen3.8-Flash-Next Q8_0 (2026-11-23) — non-standard harness, not leaderboard-comparable
+
+Goal: cut the time the engine spends re-reading prompts. All runs: Basalt v0.5.5 (or our fork of it), 1 GPU plus RAM, single request stream, thinking OFF, 2 tries, 225 exercises. Each pair of runs shared the machine (one per GPU), so compare within a pair, and pairs with each other — not with the stand-alone Basalt 2-try run (72.0%, median 11.2 s, 1h39m).
+
+| Run | Solved | Median s to solve | Mean s | 90th pct s | Wall clock | Engine requests | Prompt tokens read | Reused |
+|---|---|---|---|---|---|---|---|---|
+| Pair 1 — stock Basalt, cache flags turned up | 74.2% | 13.9 | 18.9 | 33.4 | 1h54m | 903 | 3.86 M | 0.9% |
+| Pair 1 — our fork with longest-common-prefix reuse | 78.7% | 14.5 | 21.5 | 42.7 | 1h54m | 909 | 4.17 M | 1.1% |
+| Pair 2 — stock Basalt, chat-history summaries off | 74.2% | 10.1 | 14.7 | 30.2 | 1h21m | 458 | 2.83 M | 16.4% |
+| Pair 2 — same, plus parked-conversation store (16 GiB, 12 slots) | 73.3% | 10.4 | 14.9 | 29.7 | 1h30m | 474 | 3.09 M | 15.5% |
+
+What we learned:
+- With the standard Aider benchmark settings (`max_chat_history_tokens` = 1024), aider sends a chat-history summary request after nearly every coder reply: about half of all requests and 26% of the prompt tokens. Summary and coder prompts share only 3 tokens, and Basalt drops its saved checkpoints when a different conversation arrives — so neither stock cache flags nor our prefix-reuse change could reuse anything (about 1%).
+- Turning the summaries off (a benchmark-side change, mounted as a separate copy; the standard runs are untouched) halved the request count, cut the wall clock by 29% (1h54m → 1h21m) and the median time to solve by 27% (13.9 s → 10.1 s), with the same solve rate. Reuse rose to about 16% — the shared system prompt.
+- Basalt's parked-conversation store added nothing on top.
+- Accuracy differences between these runs (73–79%) are within run-to-run variation; the same prompt gives different answers across runs even at temperature 0.
+- Still open: an offline replay of the logged prompts estimates about 41–47% of prompt tokens are reusable with checkpoints at turn boundaries, against the 16% reached here. That is the next engine change.
+
 ## Qwen3.8-27B BF16 (16-bit) — thinking ON (2026-11-22)
 
 - Setup: Qwen3.8-27B BF16 (full precision), vLLM, GPU 1 only, thinking ON, Aider Polyglot 225, diff format, 2 tries. Run folder `2026-11-22-02-58-31--full-qwen38-bf16-diff-thinking` (run name `full-qwen38-bf16-diff-thinking`).
