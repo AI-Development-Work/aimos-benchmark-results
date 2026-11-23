@@ -18,9 +18,11 @@ What developers actually care about is how fast they get working code, not how m
 | Qwen3.8-27B FP8, thinking OFF — retry run | vLLM | 1 GPU | 48.0% | 84.4% | 1.1 min | 74.7% | 82.7% | 84.4% |
 | DeepSeek V4.1-Flash (2-bit), thinking ON | Maya | 1 GPU + RAM | 85.8% | 85.8% | 8.8 min | 30.2% | 45.8% | 73.8% |
 | Qwen3.5-397B-A17B Q4_K_M, thinking OFF | llama.cpp | 2 GPUs + RAM | 84.4% | 84.4% | 6.2 min | 33.8% | 63.6% | 79.1% |
+| **Qwen3.8-Flash-Next Q8_0, thinking ON** | Strata | 1 GPU + RAM | **85.8%** | 85.8% | 2.5 min | 72.9% | 81.3% | 85.8% |
 | Qwen3.8-27B BF16 (16-bit), thinking ON | vLLM | 1 GPU | 75.1% | 75.1% | 7.3 min | 27.1% | 45.3% | 68.4% |
 | Qwen3.8-Flash-Next Q8_0, thinking OFF | Strata | 1 GPU + RAM | 74.2% | 74.2% | 0.2 min | 74.2% | 74.2% | 74.2% |
 | Qwen3.8-Flash-Next Q8_0, thinking OFF | Basalt | 1 GPU + RAM | 72.0% | 72.0% | 0.2 min | 72.0% | 72.0% | 72.0% |
+| Qwen3.8-Flash-Next Q8_0, thinking OFF, 4 requests at once | Basalt | 1 GPU + RAM | 71.1% | 71.1% | 0.9 min | 69.8% | 71.1% | 71.1% |
 | Qwen3.8-27B NVFP4 (4-bit), thinking ON | vLLM | 1 GPU | 71.1% | 71.1% | 3.3 min | 42.7% | 63.6% | 68.9% |
 | Qwen3.8-27B FP8, thinking ON | vLLM | 1 GPU | 69.3% | 69.3% | 4.0 min | 39.1% | 53.3% | 68.9% |
 | DeepSeek V4.1-Flash (2-bit), thinking OFF | Maya | 2 GPUs | 69.3% | 69.3% | 0.6 min | 69.3% | 69.3% | 69.3% |

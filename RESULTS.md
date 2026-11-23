@@ -148,6 +148,19 @@ Reading: a fast non-thinking model in a test-feedback loop reaches a correct sol
 - Setup: same as the Basalt retry run (GPU 1 + RAM, 64k context, `--parallel 1`, 1 thread). Run folder `2026-11-22-23-41-45--full-qfn-basalt-diff-nothink`. Wall clock 23:41 → 01:21 UTC (1h40m).
 - Result: 72.0% within two tries, median time to solve 0.2 min. Strata's 2-try run on the same weights: 74.2% in 1h44m. The two engines are within run-to-run noise on 2-try accuracy (Basalt's retry run gave 75.1% in its first two tries); Basalt is slightly faster.
 
+## Qwen3.8-Flash-Next Q8_0 on Strata 0.1.64 — thinking ON, standard 2-try run (2026-11-23)
+
+- Setup: as the Strata thinking-OFF runs (GPU 0 plus system RAM, 64k context, 1 thread), thinking ON. Run folder `2026-11-22-14-00-07--full-qfn-strata-diff-thinking`. Wall clock 14:00 → 04:22 UTC (14h22m).
+- Result: 85.8% within two tries — the best 2-try score of any model we ran on one GPU, matching DeepSeek 2-bit with thinking ON (85.8%, median 8.8 min). Median time to solve 2.5 min; 72.9% solved within 5 minutes.
+- Trade-off against thinking OFF on the same model: +11.6 points on the 2-try score (74.2% → 85.8%), but the median time to solve goes from about 0.2 min to 2.5 min and the full run from 1h44m to 14h22m. The thinking-OFF retry run reaches a higher final solve rate (89.8%) in 3h24m.
+
+## Qwen3.8-Flash-Next Q8_0 on Basalt v0.5.5 — 4 requests at once (2026-11-23)
+
+- Setup: Basalt `--parallel 4` (requires `--kv int8`; 4 × 32k context), speculative decoding on, 4 benchmark threads. Run folder `2026-11-23-02-24-18--full-qfn-basalt-p4-diff-nothink`. Wall clock 02:24 → 04:10 UTC (1h46m).
+- Result: 71.1% within two tries (single-request run: 72.0%), median time to solve 0.9 min (single-request: 0.2 min), total time 1h46m (single-request: 1h40m).
+- Reading: serving 4 requests at once gave no throughput gain and made each solve about 4× slower — each request drops to ~40 tok/s (~135 tok/s total) against 240–330 tok/s for one request with speculative decoding. On this engine, parallel attempts cost more than they return; an engine that keeps speculative decoding fast across several requests is an open gap.
+- Supporting measurements: speculative decoding (8-token drafts, 74–92% accepted) roughly doubles decode speed (132–141 → 238–328 tok/s). Time breakdown of a median 13.6 s solve: prompt reading 5.8 s, answer writing 6.0 s, tests about 2 s.
+
 ## Qwen3.8-27B BF16 (16-bit) — thinking ON (2026-11-22)
 
 - Setup: Qwen3.8-27B BF16 (full precision), vLLM, GPU 1 only, thinking ON, Aider Polyglot 225, diff format, 2 tries. Run folder `2026-11-22-02-58-31--full-qwen38-bf16-diff-thinking` (run name `full-qwen38-bf16-diff-thinking`).
