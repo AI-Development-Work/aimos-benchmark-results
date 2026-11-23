@@ -26,11 +26,12 @@ Our benchmark results (see [README.md](README.md)) kept pointing at the same thi
 
 **The goal is wall-clock time to the right answer — not tokens per second, and not the 2-try leaderboard score.** Every other engine here optimizes how fast a model *generates*. Caldera optimizes how fast a task gets *solved*: correct, tested code, measured as the share of tasks solved within 5, 10 and 30 minutes. Every design choice below serves that one number.
 
-- **One hardware target, done well:** NVIDIA RTX PRO 6000 Blackwell Max-Q (96 GB, 300 W) on PCIe 5.0, 2 to 8 cards. Like Basalt, we gain speed by not supporting everything — but for this card, not consumer GPUs.
+- **Blackwell only, tuned to the box it runs on:** Caldera requires an NVIDIA Blackwell GPU (native FP4/FP8 tensor cores) and drops pre-Blackwell code paths — but it is not locked to one card. At startup it probes the machine (GPU count and VRAM, PCIe generation and lanes per card, peer-to-peer/NVLink, system RAM size and bandwidth, NVMe) and plans for that configuration: which experts live on which GPU, what spills to RAM or SSD, KV-cache size, how many parallel attempts to run. Reference systems: our T7920 (2× RTX PRO 6000 Blackwell Max-Q, PCIe 3.0, 512 GB DDR4) and the planned next build (PCIe 5.0, ≥1.5 TB RAM); other Blackwell setups (RTX PRO 6000 Workstation, RTX 5090, mixed cards) should run correctly, just tuned by the same planner.
 - **Multi-model, not single-model:** Strata and Basalt each run one model. Caldera targets the family of large MoE coding models we actually benchmark (Qwen3.8-Flash-Next, DeepSeek, Qwen3.5, GLM, Kimi).
 - **Expert placement learned from coding work:** profile which experts our coding prompts actually use and keep those GPU-resident, instead of offloading by layer.
 - **Coding-calibrated quantization:** importance matrices built from coding prompts, not generic text.
 - **A built-in coder→reviewer cascade:** a fast coder attempts first; after repeated test failures the job escalates to a stronger model or reviewer — optimized for wall-clock time to a correct solution, not tokens per second.
+- **Faster retries, not just faster tokens:** run several attempts in parallel and keep the first that passes tests; reuse the prompt's processed context across retries instead of re-reading it.
 - **Benchmark-driven:** every change is measured with the harness in this repo (accuracy, time to solution, solved per hour), against the engines above, on the same model.
 
 ## Status
