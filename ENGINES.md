@@ -1,6 +1,6 @@
 # Inference engines: what we tested, and why we're building our own
 
-*Draft — 2026-11-21. Engine name: **Caldera** (named for the volcanic source of basalt; MIT-licensed, working repo name `aimos-caldera`).*
+*Draft — 2026-11-21. Engine name: **Caldera** (named for the volcanic source of basalt; MIT-licensed).*
 
 Our benchmark results (see [README.md](README.md)) kept pointing at the same thing: on local hardware, **the engine matters as much as the model**. The same 2-bit DeepSeek build solved 88% of exercises within 5 minutes on one engine setup and 79% on another, and the same 397B model ran at 18 tok/s with part of it in system RAM versus an expected 3–5× that fully on GPU. This page compares the engines we use or are evaluating, and explains what our own engine will do differently.
 
