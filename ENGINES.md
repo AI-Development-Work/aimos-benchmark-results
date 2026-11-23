@@ -39,6 +39,10 @@ Our benchmark results (see [README.md](README.md)) kept pointing at the same thi
 - **Faster retries, not just faster tokens:** run several attempts in parallel and keep the first that passes tests; reuse the prompt's processed context across retries instead of re-reading it.
 - **Benchmark-driven:** every change is measured with the harness in this repo (accuracy, time to solution, solved per hour), against the engines above, on the same model.
 
+## Licence and openness
+
+**Open source:** Caldera will be released under the MIT licence, keeping the MIT attribution of the engines it builds on (Basalt, Strata). It ships no model weights; each model keeps its own licence. Benchmarks, harness and raw results are published alongside it.
+
 ## Status
 
 Plan (2026-11-22): finish the benchmark queue (Flash-Next on Maya and vLLM NVFP4, Laguna, Qwen3-Coder-480B), then re-test every model on Caldera, then test the suite end to end (coder → Qwen review → DeepSeek review) against the single-model results.
