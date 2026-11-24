@@ -5,7 +5,7 @@ of open-weight LLMs, self-hosted on owned hardware. This repo is a running recor
 hardware and the model roster will change over time; each result row is tagged with
 the hardware config and date it was run under.
 
-**New (24 Nov 2026):** a team of two local models solved 97.3% of the benchmark in one run. Read the write-up: [Stop optimizing a model. Solve the problem.](articles/stop-optimizing-a-model.md)
+**New (24 Nov 2026):** a team of two local models solved 97.3% of the benchmark in one run. Technical write-up: [Escalation on failure: a two-model local cascade solves 219 of 225 Aider Polyglot exercises](articles/stop-optimizing-a-model.md)
 
 ## Headline: time to a correct solution
 

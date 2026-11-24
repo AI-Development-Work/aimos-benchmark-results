@@ -1,88 +1,154 @@
-# Stop optimizing a model. Solve the problem.
+# Escalation on failure: a two-model local cascade solves 219 of 225 Aider Polyglot exercises
 
-*Preliminary results, 24 November 2026. One full run so far; a repeat is the next step. Brian K. Hudes, MD, AiMOS Systems.*
+*Brian K. Hudes, MD · AiMOS Systems · 24 November 2026*
+
+*Preliminary. One full run. The repeat and the matched baselines are listed at the end. Technical companion to "Stop Optimizing a Model. Solve the Problem."*
 
 ## Summary
 
-Two open-weight models running on one desktop workstation, working as a team, solved **219 of 225 exercises (97.3%)** of the Aider Polyglot coding benchmark, with a median of **11.5 seconds** to a correct answer and no cloud calls.
+Two open-weight models on one workstation, run as a fixed escalation cascade, solved 219 of 225 Aider Polyglot exercises (97.3%) in at most 8 tries per exercise. The median time to a passing solution was 11.5 s. The same fast model alone, given 10 tries, solved 204 (90.7%). The second model alone, given 10 tries, solved 207 (92.0%).
 
-The same fast coder working alone, with more tries, solved 90.7%. The second model working alone solved 92.0%.
+The cascade is four fast tries from the coder, two tries from the same coder with reasoning on, then two tries from a second model with reasoning on. It stops at the first passing test run.
 
-The gain did not come from a bigger model or from more attempts. It came from changing *how* the work is done after a failure.
+Three points are worth a technical reader's time:
 
-## The idea
-
-Most local-inference work asks one question: how do I make this model faster or more accurate? Engines, quantization formats and leaderboards are all organised around a single model.
-
-A person who needs working code asks a different question: how do I get a correct answer quickly? That question has more answers than "a better model". A fast model can try first. If it fails, the same model can slow down and reason. If that fails, a different model, with different blind spots, can look at it.
-
-That is what we measured.
+1. The per-attempt success rate of fast retries decays quickly (60% on try 2, 20% on try 4). Switching the same model to reasoning mode on try 5 brought it back to 46%.
+2. Reasoning mode accounts for 20 of the 22 solves after try 4. The second model accounts for 2. This run supports mode switching. It does not yet support model switching.
+3. On the leaderboard's two-try rule the cascade scores 75.1%. The 97.3% is a work-until-correct number and is not comparable with leaderboard scores.
 
 ## Setup
 
-- **Benchmark:** Aider Polyglot, 225 Exercism exercises in C++, Go, Java, JavaScript, Python and Rust. Diff edit format. Each attempt after the first sees the failing test output.
-- **Hardware:** one Dell Precision T7920 with two NVIDIA RTX PRO 6000 Blackwell Max-Q cards (96 GB each) and 512 GB of DDR4 memory.
-- **Models and engines:** Qwen3.8-Flash-Next (8-bit) on Basalt v0.5.5, and DeepSeek V4.1-Flash (2-bit) on Maya. Both were loaded at the same time, one per card.
+| Item | Value |
+|---|---|
+| Benchmark | Aider Polyglot, 225 Exercism exercises (C++ 26, Go 39, Java 47, JavaScript 49, Python 34, Rust 30) |
+| Harness | aider commit `5dc9490`, `diff` edit format, 1 benchmark thread |
+| Harness change | Chat-history summaries off (see Confounds) |
+| Machine | Dell Precision T7920, dual Xeon Platinum 8168, 512 GB DDR4 ECC |
+| GPUs | 2x NVIDIA RTX PRO 6000 Blackwell Max-Q, 96 GB each, PCIe 3.0 |
+| Coder | Qwen3.8-Flash-Next, Unsloth Q8_0, as a 179 GiB `.basalt` pack on Basalt v0.5.5, GPU 0 plus system RAM, 64k context |
+| Second model | DeepSeek-V4.1-Flash-1017, Maya-S IQ2_XXS (about 2-bit), on the Maya engine, GPU 1 |
+| Run folder | `2026-11-23-23-26-13--full-team-qfn-think-ds-nosum-diff-1123-2325` |
 
-The team works each exercise in this order and stops at the first correct answer:
+Both models stay loaded for the whole run, one per card. Nothing leaves the machine.
 
-| Tries | Model | Mode |
-|---|---|---|
-| 1-4 | Qwen3.8-Flash-Next | fast (thinking off) |
-| 5-6 | Qwen3.8-Flash-Next | thinking on |
-| 7-8 | DeepSeek V4.1-Flash | thinking on |
+Measured single-request speeds from earlier runs on this hardware: Flash-Next on Basalt reads prompts at about 1.36k tok/s and decodes at 132 to 141 tok/s, or 238 to 328 tok/s with speculative decoding (8-token drafts, 74 to 92% accepted). DeepSeek 2-bit on Maya decodes at about 35 tok/s on one card and about 72 tok/s across two.
 
-The order was chosen from earlier single-model runs on this machine: Flash-Next is the quickest route to a correct answer on most exercises, and thinking mode is slow, so it is only worth paying for on the exercises that need it.
+## The cascade
+
+| Tries | Model | Mode | Engine | Placement |
+|---|---|---|---|---|
+| 1 to 4 | Qwen3.8-Flash-Next Q8_0 | thinking off | Basalt v0.5.5 | GPU 0 + RAM |
+| 5 and 6 | Qwen3.8-Flash-Next Q8_0 | thinking on | Basalt v0.5.5 | GPU 0 + RAM |
+| 7 and 8 | DeepSeek V4.1-Flash 2-bit | thinking on | Maya | GPU 1 |
+
+Each try after the first sees the failing test output, as in the standard benchmark.
+
+The ordering came from the single-model runs. Flash-Next with thinking off had the shortest time to a correct answer of anything tested (median about 12 s). With thinking always on, the same model scored 85.8% on two tries, but the median rose to 2.5 min and the run took 14 h 22 min. Reasoning is worth its cost only on the exercises that fast mode cannot solve, so it sits behind four fast tries.
+
+Stage hand-off details (how much earlier conversation each stage sees, sampling settings and per-stage timeouts) will be documented in the repository with the harness.
 
 ## Results
 
-| Measure | Team (up to 8 tries) | Flash-Next alone (up to 10 tries) | DeepSeek alone (up to 10 tries) |
+| Measure | Cascade (8 tries) | Flash-Next alone (10 tries) | DeepSeek alone (10 tries) |
 |---|---|---|---|
-| Solved | **219 / 225 (97.3%)** | 204 / 225 (90.7%) | 207 / 225 (92.0%) |
-| Score after 2 tries | 75.1% | 75.1% | 68.9% |
-| Median time to solve | 11.5 s | 13.6 s | 0.8 min |
-| Total run time | 3 h 39 min | 2 h 40 min | - |
+| Solved | 219 / 225 (97.3%) | 204 / 225 (90.7%) | 207 / 225 (92.0%) |
+| Solved within 2 tries | 169 (75.1%) | 169 (75.1%) | 155 (68.9%) |
+| Median time to solve | 11.5 s | 13.6 s | 48 s |
+| Wall clock | 3 h 39 min | 2 h 40 min | 2 h 04 min (4 sessions, both GPUs) |
 
-Who solved what:
+Baselines: `until10-qfn-basalt-diff-nothink` (Basalt, one GPU plus RAM, 1 thread) and `until10-deepseek-2gpu-diff-nothink` (Maya, both GPUs, 4 sessions).
 
-| Stage | Exercises solved |
-|---|---|
-| Flash-Next, fast (tries 1-4) | 197 (85, 84, 21, 7) |
-| Flash-Next, thinking (tries 5-6) | 20 (13, 7) |
-| DeepSeek, thinking (tries 7-8) | 2 (1, 1) |
-| Unsolved | 6 |
+Time to solve for the cascade: mean 32.1 s, 90th percentile 81.6 s among solved exercises. Of all 225 exercises, 39.1% were solved within 10 s, 73.8% within 30 s and 96.4% within 5 min. There were no infrastructure errors and no timeouts.
 
-There were no infrastructure errors and no timeouts.
+### Per-try yield
 
-Three things stand out:
+"Started" is the number of exercises still unsolved when that try began. It is derived from the per-try solve counts and assumes every unsolved exercise went on to the next try, which holds for a run without errors.
 
-1. **Retrying the same way runs out quickly.** Fast-mode tries 3 and 4 added 28 exercises between them. The single-model run shows the same thing from the other side: ten fast tries stopped at 90.7%.
-2. **Changing mode rescued most of the rest.** Turning thinking on for the 28 exercises still unsolved after four fast tries solved 20 of them.
-3. **Speed was not given up.** Most exercises are still solved by the first fast tries, so the median stays at about 11 seconds. Only the hard exercises pay for thinking.
+| Try | Stage | Started | Solved | Attempt success rate | Cumulative solved |
+|---|---|---|---|---|---|
+| 1 | Flash-Next, fast | 225 | 85 | 37.8% | 85 (37.8%) |
+| 2 | Flash-Next, fast | 140 | 84 | 60.0% | 169 (75.1%) |
+| 3 | Flash-Next, fast | 56 | 21 | 37.5% | 190 (84.4%) |
+| 4 | Flash-Next, fast | 35 | 7 | 20.0% | 197 (87.6%) |
+| 5 | Flash-Next, thinking | 28 | 13 | 46.4% | 210 (93.3%) |
+| 6 | Flash-Next, thinking | 15 | 7 | 46.7% | 217 (96.4%) |
+| 7 | DeepSeek, thinking | 8 | 1 | 12.5% | 218 (96.9%) |
+| 8 | DeepSeek, thinking | 7 | 1 | 14.3% | 219 (97.3%) |
+
+The run used 514 attempts in total: 456 fast, 43 Flash-Next thinking and 15 DeepSeek. That is 2.28 attempts per exercise. Only 58 attempts (11%) used reasoning.
+
+### Where the wall clock went
+
+The 219 solved exercises account for about 117 minutes (219 x 32.1 s). The run took 219 minutes. By subtraction, the six unsolved exercises consumed up to about 100 minutes, roughly 17 minutes each, presumably because each one ran all four reasoning attempts to completion. Harness overhead between exercises is inside that figure, so treat it as an upper bound. Even so, close to half of the run was spent on six exercises that were never solved. A time budget on the reasoning stages is the obvious next control.
 
 ![Time to a correct solution, all runs](../images/time_to_solution.png)
 
-## How this compares with published results
+## Where the gain comes from
 
-The official [Aider leaderboard](https://aider.chat/docs/leaderboards/) allows two tries. Its top entry is GPT-5 with high reasoning at 88.0%, at about 194 seconds per exercise; the best open-weight entry is DeepSeek V3.2-Exp (Reasoner) at 74.2%. The page was last updated in November 2025, so newer models are missing.
+**Fast retries stop paying.** The single-model retry runs show what further fast tries buy. In the vLLM run of the same model (`until10-qfn-vllm-nvfp4-diff-nothink`, 4-bit, same accuracy within noise), 196 exercises were solved after four tries. Tries 5 to 10 added 5 more, out of 29 still open. In the cascade, 197 were solved after four tries, and two reasoning tries added 20 out of 28.
 
-**Our 97.3% is not a leaderboard score.** On the two-try rule the team scores 75.1%, level with the best open-weight entry and well below GPT-5.
+| After four fast tries | Next step | Further solves |
+|---|---|---|
+| 196 solved, 29 open (Flash-Next alone, vLLM) | six more fast tries | 5 |
+| 197 solved, 28 open (cascade) | two thinking tries, same model | 20 |
 
-The fairer comparison is with systems that are allowed to keep working until the tests pass. The highest such result we found is [Refact.ai's agent using Claude 3.7 Sonnet, at 93.3%](https://refact.ai/blog/2025/refact-ai-agent-achieves-93-3-on-aider-polyglot-benchmark/). We found none at or above 97%, though we did not search exhaustively. GPT-5 has no published work-until-correct result on this benchmark and would likely score above its 88% under these rules.
+This is the central observation. It compares two different runs, so it shares the single-run caveat below.
+
+**DeepSeek's contribution is small in this run.** Eight exercises reached DeepSeek and it solved two. Those eight had already survived six attempts by Flash-Next, so they are the hardest in the set, and 2 of 8 says little about DeepSeek in general. An earlier offline comparison of the two single-model retry runs found that DeepSeek solved 14 exercises Flash-Next never solved in 10 tries, for a union of 218 of 225. The cascade reached 219, about that union, with reasoning mode doing most of the work DeepSeek would otherwise have done. Whether a second model adds anything beyond reasoning mode is open. The run without DeepSeek will answer it.
+
+**Repetition is not useless for every model.** DeepSeek alone on two GPUs kept finding solutions late: tries 5 to 8 added 14 of the 32 exercises still open after try 4. On one GPU the same model added 5 of 23 and nothing after try 6. The decay of fast retries is clear for Flash-Next and mixed for DeepSeek.
+
+## How much of this is noise
+
+There are three independent 10-try runs of Flash-Next with thinking off, on three engines: 201 (vLLM, 4-bit), 202 (Strata, 8-bit) and 204 (Basalt, 8-bit). That is a spread of 1.4 points. The cascade's 219 sits 6.7 points above the best of them.
+
+Treating exercises as independent trials, the 95% Wilson interval for 219 of 225 is 94.3 to 98.8%. For 204 of 225 it is 86.2 to 93.8%. A Fisher exact test of 219 versus 204 gives p = 0.005, and 219 versus 207 gives p = 0.02. These are rough. The same 225 exercises are used in every run, so the correct test is paired (McNemar on per-exercise outcomes), and exercises differ greatly in difficulty.
+
+Aggregate scores are stable while individual exercises are not. First-two-try scores for Flash-Next ranged only from 72.0% to 75.1% across six runs on three engines, yet about a third of exercises changed between solved and unsolved from one run to the next, and outputs differed between runs even at temperature 0. Per-language counts move the same way: for the same model on two engines, Rust was 17 of 30 in one two-try run and 20 of 30 in the other, and Python 27 and 31 of 34. Early evidence that one model was better at Rust and another at Python did not survive repeat runs, which is why the cascade routes on failure and not on language.
+
+## Confounds
+
+- **Chat-history summaries.** The cascade ran with aider's summaries off. The single-model retry runs had them on. With the benchmark's default (`max_chat_history_tokens` = 1024), aider sends a summary request after nearly every coder reply, about half of all requests and 26% of prompt tokens. Turning them off, in a paired test on the same engine, cut wall clock by 29% (1 h 54 min to 1 h 21 min) and median time to solve by 27% (13.9 s to 10.1 s) with the same solve rate (74.2% both). So the 11.5 s versus 13.6 s median difference should not be credited to the cascade. Whether summaries change the solve rate over 10 tries has not been measured.
+- **Try caps differ.** 8 versus 10. This favors the baselines.
+- **The DeepSeek baseline had both GPUs.** In the cascade it has one. Its 1-GPU plus RAM retry run reached the same 92.0% with a median of 1.6 min.
+- **One thread versus four.** The cascade and the Flash-Next baseline ran one exercise at a time. The DeepSeek baseline ran four sessions, so its times are under load.
+- **The order was tuned on this benchmark.** The stage boundaries (4, 2, 2) were chosen after looking at single-model results on the same 225 exercises. There is no held-out set.
+
+## What did not work
+
+| Attempt | Result | Reading |
+|---|---|---|
+| Larger model: Qwen3.5-397B-A17B Q4_K_M, llama.cpp, 18 layers' experts in RAM | 84.4% on 2 tries, median 6.2 min, 13.3 h run, about 18.5 tok/s | About 68 GB of expert weights ran from system RAM with the GPUs near 10% busy. Accuracy without speed. |
+| Reasoning always on: Flash-Next on Strata | 85.8% on 2 tries, median 2.5 min, 14 h 22 min | Plus 11.6 points on the 2-try score for about 8x the run time. The fast retry run reached 89.8% in 3 h 24 min. |
+| Four concurrent requests: Basalt `--parallel 4` | 71.1%, median 0.9 min versus 0.2 min, run 1 h 46 min versus 1 h 40 min | Each request fell to about 40 tok/s (about 135 total) against 240 to 330 for a single request with speculative decoding. No throughput gain. |
+| Prompt caching: stock cache flags, then a longest-common-prefix fork | 0.9% and 1.1% of prompt tokens reused | Summary and coder prompts share 3 tokens, and Basalt drops checkpoints when a different conversation arrives. With summaries off, reuse rose to 16%. An offline replay estimates 41 to 47% is reachable with checkpoints at turn boundaries. |
+| Routing by language | Dropped | The per-language differences were run-to-run variation. |
+
+For scale, a median 13.6 s solve on Basalt breaks down as 5.8 s reading the prompt, 6.0 s writing the answer and about 2 s running tests. Prompt reading is as large as generation, which is why prompt reuse is the next engine change.
+
+## Comparison with published results
+
+On the two-try rule the cascade scores 75.1%. The official [Aider leaderboard](https://aider.chat/docs/leaderboards/) tops out at GPT-5 (high) with 88.0%. Its best open-weight entry is DeepSeek-V3.2-Exp (Reasoner) at 74.2%. The page was last refreshed in November 2025, so newer models are absent.
+
+The nearer comparison is with systems that iterate until tests pass. The highest such published result I found is [Refact.ai's agent on Claude 3.7 Sonnet](https://refact.ai/blog/2025/refact-ai-agent-achieves-93-3-on-aider-polyglot-benchmark/): 93.3% with thinking, 92.9% without. That is a different harness (an agent with a step cap, not aider with a try cap) on a hosted frontier model, so it is a reference point and not a like-for-like comparison. I found nothing published at or above 97%, and I did not search exhaustively. GPT-5 has no published work-until-correct result on this benchmark and would very likely exceed its 88% under these rules.
 
 ## Limits
 
-- **One run.** In our repeat runs of single models, roughly a third of exercises flip between solved and unsolved. The direction of the result is clear; the size of the gain needs a second run.
-- **Settings differ slightly between the team run and the single-model runs.** The team run had aider's chat-history summaries switched off; the single-model retry runs had them on. In a separate test, switching summaries off cut median time by about a quarter on its own. So the 11.5 s versus 13.6 s difference should not be credited to the team. A matched baseline is on the list.
-- **The second model added only two solves.** This run shows that changing mode helps. It does not yet show how much a second model adds over thinking mode alone. A run without the second model will answer that.
-- **This is a benchmark of small, self-contained exercises.** It is not evidence about large real-world codebases.
-- **Tries are not equal in cost.** A thinking try takes far longer than a fast one, which is why the total run was an hour longer than the single-model run.
+- One run. The direction is supported by the per-try data. The size of the gain is not established.
+- Small, self-contained exercises with complete test suites. This says nothing about large repositories, ambiguous requirements or tasks with no tests.
+- The benchmark is public and old enough that some exercises may be in the training data of both models. That affects absolute scores more than the comparison between the cascade and the same models alone.
+- Attempts are unequal in cost. A try count is a poor unit. Wall-clock time to a passing solution is the measure I report and the one I would ask others to report.
+- The cascade harness is not yet published.
 
-## What comes next
+## Next runs
 
-1. Repeat the team run to measure run-to-run variation.
-2. A matched single-model baseline with identical settings.
-3. The same cascade without the second model.
-4. Other team compositions and other hardware configurations.
+1. Repeat the cascade unchanged, to measure run-to-run variation, and report paired per-exercise outcomes.
+2. Flash-Next alone, 10 tries, summaries off, 1 thread: the matched baseline.
+3. The cascade without DeepSeek (four fast, four thinking), to isolate what the second model adds.
+4. A time budget on the reasoning stages, to recover the wall clock spent on unsolved exercises.
+5. Earlier escalation (two fast tries, then thinking), since the attempt success rate has already fallen to 37.5% by try 3.
+6. Other line-ups and other hardware.
 
-Results are posted to this repository as soon as each run finishes, so [RESULTS.md](../RESULTS.md) is always the most current record. It includes the runs that went badly. The engines are described in [ENGINES.md](../ENGINES.md). The harness that runs the team will be released once the result has been repeated.
+## Data
+
+Every run, including the failed and abandoned ones, is in [github.com/AI-Development-Work/aimos-benchmark-results](https://github.com/AI-Development-Work/aimos-benchmark-results). [RESULTS.md](../RESULTS.md) holds the full tables and run folders, [ENGINES.md](../ENGINES.md) describes the engines, and new runs are posted there as they finish. The cascade harness will be released once the result has been repeated.
