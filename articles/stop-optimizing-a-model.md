@@ -194,7 +194,7 @@ This is the central observation. It compares two different runs, so it shares th
 
 ## How much of this is noise
 
-There are three independent 10-try runs of Flash-Next with thinking off, on three engines: 201 (vLLM, 4-bit), 202 (Strata, 8-bit) and 204 (Basalt, 8-bit). That is a spread of 1.4 points. The cascade's 219 sits 6.7 points above the best of them.
+There are three independent 10-try runs of Flash-Next with thinking off, on three engines: 201 (vLLM, 4-bit), 202 (Strata, 8-bit) and 204 (Basalt, 8-bit). That is a spread of 1.3 points (3 of 225). The cascade's 219 sits 6.7 points above the best of them.
 
 Treating exercises as independent trials, the 95% Wilson interval for 219 of 225 is 94.3 to 98.8%. For 204 of 225 it is 86.2 to 93.8%. A Fisher exact test of 219 versus 204 gives p = 0.005, and 219 versus 207 gives p = 0.02. These are rough. The same 225 exercises are used in every run, so the correct test is paired (McNemar on per-exercise outcomes), and exercises differ greatly in difficulty.
 
