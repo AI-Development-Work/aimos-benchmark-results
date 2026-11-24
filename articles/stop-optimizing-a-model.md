@@ -85,4 +85,4 @@ The fairer comparison is with systems that are allowed to keep working until the
 3. The same cascade without the second model.
 4. Other team compositions and other hardware configurations.
 
-All runs, including the ones that went badly, are in [RESULTS.md](../RESULTS.md). The engines are described in [ENGINES.md](../ENGINES.md). The harness that runs the team will be released once the result has been repeated.
+Results are posted to this repository as soon as each run finishes, so [RESULTS.md](../RESULTS.md) is always the most current record. It includes the runs that went badly. The engines are described in [ENGINES.md](../ENGINES.md). The harness that runs the team will be released once the result has been repeated.
