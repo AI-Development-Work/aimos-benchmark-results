@@ -169,7 +169,6 @@ Reading: a fast non-thinking model in a test-feedback loop reaches a correct sol
 - FP8, thinking OFF, `full-laguna-fp8-diff-nothink`: 46.7% (105/225); median 0.3 min; wall clock 18:17 → 19:16 UTC (59 min).
 - NVFP4, thinking ON, `full-laguna-nvfp4-diff-thinking`: stopped by our 20-hour rule — after 12 exercises (6 solved) it projected to 21 hours. Not a full result.
 - FP8, thinking ON, `full-laguna-fp8-diff-thinking`: stopped by the same 20-hour rule on 2026-11-24. It was paused at 30 exercises, resumed, and stopped at 43 of 225 (21 solved, 48.8%) when the remaining exercises projected to about 32 hours (roughly 10 minutes per exercise). Median time to solve among the solved exercises 45 s, mean 409 s. Not a full result.
-- FP8, thinking ON: in progress at the time of writing.
 - Reading: very fast, but with thinking off it solves well under half the exercises, far below Qwen3.8-Flash-Next (72–74%) at similar per-exercise speed. 4-bit and 8-bit are within run-to-run variation of each other.
 
 ## Qwen3.8-Flash-Next NVFP4 (4-bit) on vLLM v0.34.0 — thinking OFF, both GPUs (2026-11-23)
