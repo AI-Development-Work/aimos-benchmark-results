@@ -21,7 +21,7 @@ That is what we measured.
 ## Setup
 
 - **Benchmark:** Aider Polyglot, 225 Exercism exercises in C++, Go, Java, JavaScript, Python and Rust. Diff edit format. Each attempt after the first sees the failing test output.
-- **Hardware:** one Dell Precision T7920 with two NVIDIA RTX PRO 6000 Blackwell Max-Q cards (96 GB each) and 502 GB of DDR4 memory.
+- **Hardware:** one Dell Precision T7920 with two NVIDIA RTX PRO 6000 Blackwell Max-Q cards (96 GB each) and 512 GB of DDR4 memory.
 - **Models and engines:** Qwen3.8-Flash-Next (8-bit) on Basalt v0.5.5, and DeepSeek V4.1-Flash (2-bit) on Maya. Both were loaded at the same time, one per card.
 
 The team works each exercise in this order and stops at the first correct answer:
