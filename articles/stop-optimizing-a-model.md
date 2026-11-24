@@ -133,7 +133,7 @@ Per-try yield in the repeat:
 What held and what did not:
 
 - **The headline held.** The same number of exercises was solved, and only 4 of 225 final outcomes differed between runs. The final result is much more stable than the first-two-try score, which moved by 3.5 points (75.1% to 71.6%).
-- **The decay of fast retries held** (about 20 to 24% by try 4), and so did the recovery on the first thinking try (46% and 48%).
+- **The decay of fast retries held** in both cascade runs (about 20 to 24% by try 4), and so did the recovery on the first thinking try (46% and 48%). The later run without a second model showed the same direction with a smaller step: 29% on try 4 and 38% on the first thinking try.
 - **The second thinking try did not hold.** It solved 7 of 15 in run 1 and 2 of 13 in the repeat. The first thinking try carries most of the benefit.
 - **DeepSeek's share rose from 2 to 5.** Thinking mode plus the second model solved 22 in run 1 and 19 in the repeat, but the split between them moved. The evidence for a separate benefit from the second model is still thin; the run without DeepSeek, now in progress, addresses it.
 
