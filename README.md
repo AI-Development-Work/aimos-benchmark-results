@@ -5,6 +5,8 @@ of open-weight LLMs, self-hosted on owned hardware. This repo is a running recor
 hardware and the model roster will change over time; each result row is tagged with
 the hardware config and date it was run under.
 
+**New (24 Nov 2026):** a team of two local models solved 97.3% of the benchmark in one run. Read the write-up: [Stop optimizing a model. Solve the problem.](articles/stop-optimizing-a-model.md)
+
 ## Headline: time to a correct solution
 
 What developers actually care about is how fast they get working code, not how many tries a model needs. This table scores every run on **wall-clock time to a correct solution**: the share of all 225 exercises solved within 5, 10 and 30 minutes of starting, all tries included. The standard leaderboard number (pass within 2 tries) is shown alongside for comparison.

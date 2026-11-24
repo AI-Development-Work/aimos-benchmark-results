@@ -225,6 +225,8 @@ Reading this fairly:
 - The gain comes from changing *how* the model works after it fails (turning thinking on), not from more tries: the team used fewer tries (8) than the single-model runs (10) and solved 15 more exercises.
 - This is one run. In repeat runs of a single model about a third of exercises flip between solved and unsolved, so a repeat is needed before treating the size of the gain as settled.
 - The team run is longer in total because the hard exercises now get thinking-mode attempts instead of being abandoned.
+- Settings caveat: this run had aider's chat-history summaries off; the single-model retry runs had them on. Summaries off shortened median time by about a quarter in a separate test, so the 11.5 s vs 13.6 s difference should not be credited to the team. A matched baseline is planned.
+- Write-up: [articles/stop-optimizing-a-model.md](articles/stop-optimizing-a-model.md).
 - Folder: `2026-11-23-23-26-13--full-team-qfn-think-ds-nosum-diff-1123-2325`.
 
 ## Qwen3.8-27B BF16 (16-bit) — thinking ON (2026-11-22)
