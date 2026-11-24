@@ -2,7 +2,7 @@
 
 *Brian K. Hudes, MD · AiMOS Systems · 24 November 2026*
 
-*Preliminary. One full run. The repeat and the matched baselines are listed at the end. Technical companion to "Stop Optimizing a Model. Solve the Problem."*
+*Preliminary. Two full runs of the cascade (the second an unchanged repeat, added 24 November). The matched baselines are listed at the end. Technical companion to "Stop Optimizing a Model. Solve the Problem."*
 
 ## Summary
 
@@ -99,6 +99,44 @@ About a third of the run went to six exercises that were never solved, and four 
 
 ![Time to a correct solution, all runs](../images/time_to_solution.png)
 
+## Replication
+
+The cascade was run a second time with nothing changed (same configuration, harness commit, models and servers; the benchmark container image was rebuilt from the same build file after a routine cleanup removed it).
+
+| Measure | Run 1 | Run 2 (repeat) |
+|---|---|---|
+| Solved | 219 / 225 (97.3%) | 219 / 225 (97.3%) |
+| Solved within 2 tries | 169 (75.1%) | 161 (71.6%) |
+| Median time to solve | 11.5 s | 12.8 s |
+| Mean / 90th percentile | 32.1 s / 81.6 s | 39.8 s / 56.9 s |
+| Wall clock | 3 h 39 min | 3 h 26 min |
+| Solved by Flash-Next, fast (tries 1-4) | 197 | 200 |
+| Solved by Flash-Next, thinking (tries 5-6) | 20 | 14 |
+| Solved by DeepSeek (tries 7-8) | 2 | 5 |
+| Infrastructure errors | 0 | 0 |
+
+Paired by exercise: 217 solved in both runs, 2 solved only in run 1 (cpp/grade-school, rust/xorcism), 2 solved only in run 2 (java/hangman, java/zipper), and 4 unsolved in both (cpp/kindergarten-garden, cpp/spiral-matrix, go/robot-simulator, java/rational-numbers). Across the two runs, 221 of the 225 exercises were solved at least once.
+
+Per-try yield in the repeat:
+
+| Try | Stage | Started | Solved | Attempt success rate |
+|---|---|---|---|---|
+| 1 | Flash-Next, fast | 225 | 83 | 36.9% |
+| 2 | Flash-Next, fast | 142 | 78 | 54.9% |
+| 3 | Flash-Next, fast | 64 | 31 | 48.4% |
+| 4 | Flash-Next, fast | 33 | 8 | 24.2% |
+| 5 | Flash-Next, thinking | 25 | 12 | 48.0% |
+| 6 | Flash-Next, thinking | 13 | 2 | 15.4% |
+| 7 | DeepSeek, thinking | 11 | 3 | 27.3% |
+| 8 | DeepSeek, thinking | 8 | 2 | 25.0% |
+
+What held and what did not:
+
+- **The headline held.** The same number of exercises was solved, and only 4 of 225 final outcomes differed between runs. The final result is much more stable than the first-two-try score, which moved by 3.5 points (75.1% to 71.6%).
+- **The decay of fast retries held** (about 20 to 24% by try 4), and so did the recovery on the first thinking try (46% and 48%).
+- **The second thinking try did not hold.** It solved 7 of 15 in run 1 and 2 of 13 in the repeat. The first thinking try carries most of the benefit.
+- **DeepSeek's share rose from 2 to 5.** Thinking mode plus the second model solved 22 in run 1 and 19 in the repeat, but the split between them moved. The evidence for a separate benefit from the second model is still thin; the run without DeepSeek, now in progress, addresses it.
+
 ## Where the gain comes from
 
 **Fast retries stop paying.** The single-model retry runs show what further fast tries buy. In the vLLM run of the same model (`until10-qfn-vllm-nvfp4-diff-nothink`, 4-bit, same accuracy within noise), 196 exercises were solved after four tries. Tries 5 to 10 added 5 more, out of 29 still open. In the cascade, 197 were solved after four tries, and two reasoning tries added 20 out of 28.
@@ -150,7 +188,7 @@ The nearer comparison is with systems that iterate until tests pass. The highest
 
 ## Limits
 
-- One run. The direction is supported by the per-try data. The size of the gain is not established.
+- Two runs of the cascade, both 219 of 225. The single-model baselines it is compared with are not yet matched in settings (see Confounds), so the size of the gain over a matched baseline is not established.
 - Small, self-contained exercises with complete test suites. This says nothing about large repositories, ambiguous requirements or tasks with no tests.
 - The benchmark is public and old enough that some exercises may be in the training data of both models. That affects absolute scores more than the comparison between the cascade and the same models alone.
 - Attempts are unequal in cost. A try count is a poor unit. Wall-clock time to a passing solution is the measure I report and the one I would ask others to report.
@@ -158,7 +196,7 @@ The nearer comparison is with systems that iterate until tests pass. The highest
 
 ## Next runs
 
-1. Repeat the cascade unchanged, to measure run-to-run variation, and report paired per-exercise outcomes. This run started on 24 November.
+1. Done: the cascade was repeated unchanged (see Replication).
 2. Flash-Next alone, 10 tries, summaries off, 1 thread: the matched baseline.
 3. The cascade without DeepSeek (four fast, four thinking), to isolate what the second model adds.
 4. A time budget on the reasoning stages, to recover the wall clock spent on unsolved exercises.

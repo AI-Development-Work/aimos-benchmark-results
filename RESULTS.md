@@ -223,7 +223,8 @@ How the team works on each exercise (it stops at the first correct answer):
 
 Reading this fairly:
 - The gain comes from changing *how* the model works after it fails (turning thinking on), not from more tries: the team used fewer tries (8) than the single-model runs (10) and solved 15 more exercises.
-- This is one run. In repeat runs of a single model about a third of exercises flip between solved and unsolved, so a repeat is needed before treating the size of the gain as settled.
+- Repeated unchanged on 2026-11-24 (run `full-team-qfn-think-ds-nosum-diff-rep2-1124-0439`): again 219 / 225 (97.3%); 2-try 71.6%; median 12.8 s, mean 39.8 s, 90th percentile 56.9 s; wall clock 3 h 26 min; solved by stage 200 / 14 / 5 (by try: 83, 78, 31, 8 | 12, 2 | 3, 2); no infrastructure errors. Paired with run 1: 217 solved in both, 2 only in run 1 (cpp/grade-school, rust/xorcism), 2 only in the repeat (java/hangman, java/zipper), 4 unsolved in both (cpp/kindergarten-garden, cpp/spiral-matrix, go/robot-simulator, java/rational-numbers).
+- The final solve count was stable across the two runs (4 of 225 outcomes differed); the 2-try score moved by 3.5 points and the split between thinking mode and DeepSeek moved (20/2 vs 14/5).
 - The team run is longer in total because the hard exercises now get thinking-mode attempts instead of being abandoned.
 - Settings caveat: this run had aider's chat-history summaries off; the single-model retry runs had them on. Summaries off shortened median time by about a quarter in a separate test, so the 11.5 s vs 13.6 s difference should not be credited to the team. A matched baseline is planned.
 - Write-up: [articles/stop-optimizing-a-model.md](articles/stop-optimizing-a-model.md).
