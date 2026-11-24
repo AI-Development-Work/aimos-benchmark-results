@@ -45,7 +45,12 @@ Each try after the first sees the failing test output, as in the standard benchm
 
 The ordering came from the single-model runs. Flash-Next with thinking off had the shortest time to a correct answer of anything tested (median about 12 s). With thinking always on, the same model scored 85.8% on two tries, but the median rose to 2.5 min and the run took 14 h 22 min. Reasoning is worth its cost only on the exercises that fast mode cannot solve, so it sits behind four fast tries.
 
-Stage hand-off details (how much earlier conversation each stage sees, sampling settings and per-stage timeouts) will be documented in the repository with the harness.
+Stage hand-off, as configured for this run:
+
+- **Fast to thinking (same model):** the chat is kept. The thinking tries see the earlier attempts and their test output.
+- **Flash-Next to DeepSeek:** a fresh chat. DeepSeek receives a brief with the original task, a one-line list of earlier attempts and the latest test output. The solution files are passed in their current state.
+- **Sampling:** temperature 0 to both models in every stage (aider's default). No top_p is sent, so each server's own value applies (0.95 on Basalt, 1.0 on Maya).
+- **Request timeouts:** 600 s for fast tries, 1800 s for Flash-Next thinking, 3600 s for DeepSeek. There is no per-exercise time cap beyond the 8-try limit and a 3-minute test timeout.
 
 ## Results
 
@@ -79,7 +84,18 @@ The run used 514 attempts in total: 456 fast, 43 Flash-Next thinking and 15 Deep
 
 ### Where the wall clock went
 
-The 219 solved exercises account for about 117 minutes (219 x 32.1 s). The run took 219 minutes. By subtraction, the six unsolved exercises consumed up to about 100 minutes, roughly 17 minutes each, presumably because each one ran all four reasoning attempts to completion. Harness overhead between exercises is inside that figure, so treat it as an upper bound. Even so, close to half of the run was spent on six exercises that were never solved. A time budget on the reasoning stages is the obvious next control.
+The 219 solved exercises account for about 117 minutes (219 x 32.1 s). The six unsolved exercises took 78 minutes of model and test time between them. The rest of the 219-minute run is harness overhead between exercises.
+
+| Unsolved exercise | Time across all 8 tries |
+|---|---|
+| go/robot-simulator | 27 min 12 s (4 test timeouts) |
+| java/hangman | 19 min 20 s |
+| java/rational-numbers | 14 min 26 s |
+| java/zipper | 14 min 24 s |
+| cpp/kindergarten-garden | 1 min 40 s |
+| cpp/spiral-matrix | 1 min 00 s |
+
+About a third of the run went to six exercises that were never solved, and four of them account for nearly all of it. A time budget on the reasoning stages is the obvious next control.
 
 ![Time to a correct solution, all runs](../images/time_to_solution.png)
 
@@ -142,7 +158,7 @@ The nearer comparison is with systems that iterate until tests pass. The highest
 
 ## Next runs
 
-1. Repeat the cascade unchanged, to measure run-to-run variation, and report paired per-exercise outcomes.
+1. Repeat the cascade unchanged, to measure run-to-run variation, and report paired per-exercise outcomes. This run started on 24 November.
 2. Flash-Next alone, 10 tries, summaries off, 1 thread: the matched baseline.
 3. The cascade without DeepSeek (four fast, four thinking), to isolate what the second model adds.
 4. A time budget on the reasoning stages, to recover the wall clock spent on unsolved exercises.
