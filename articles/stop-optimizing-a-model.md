@@ -2,7 +2,7 @@
 
 *Brian K. Hudes, MD · AiMOS Systems · 24 November 2026*
 
-*Preliminary. Two full runs of the cascade (the second an unchanged repeat, added 24 November). The matched baselines are listed at the end. Technical companion to "Stop Optimizing a Model. Solve the Problem."*
+*Preliminary. Two full runs of the cascade (the second an unchanged repeat, added 24 November). A matched single-model baseline and a run without the second model were added the same day (see Matched baseline and ablation). Technical companion to "Stop Optimizing a Model. Solve the Problem."*
 
 ## Summary
 
@@ -137,6 +137,46 @@ What held and what did not:
 - **The second thinking try did not hold.** It solved 7 of 15 in run 1 and 2 of 13 in the repeat. The first thinking try carries most of the benefit.
 - **DeepSeek's share rose from 2 to 5.** Thinking mode plus the second model solved 22 in run 1 and 19 in the repeat, but the split between them moved. The evidence for a separate benefit from the second model is still thin; the run without DeepSeek, now in progress, addresses it.
 
+## Matched baseline and ablation
+
+Two further runs, both with the cascade's exact settings (chat-history summaries off, 1 thread, same harness, same Basalt server):
+
+- **Matched baseline:** Flash-Next alone, thinking off, up to 10 tries.
+- **No second model:** Flash-Next with four fast tries, then four thinking tries. DeepSeek is not used.
+
+| Measure | Cascade, run 1 | Cascade, run 2 | No second model (4 fast + 4 thinking) | Matched baseline (10 fast) |
+|---|---|---|---|---|
+| Solved | 219 (97.3%) | 219 (97.3%) | 216 (96.0%) | 205 (91.1%) |
+| Solved within 2 tries | 75.1% | 71.6% | 75.1% | 76.9% |
+| Median time to solve | 11.5 s | 12.8 s | 10.9 s | 10.3 s |
+| Mean / 90th percentile | 32.1 / 81.6 s | 39.8 / 56.9 s | 27.0 / 68.4 s | 17.5 / 37.0 s |
+| Wall clock | 3 h 39 min | 3 h 26 min | 2 h 33 min | 2 h 07 min |
+| GPUs used | 2 | 2 | 1 | 1 |
+
+Solved at each try:
+
+| Run | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9-10 |
+|---|---|---|---|---|---|---|---|---|---|
+| Matched baseline (all fast) | 90 | 83 | 23 | 2 | 4 | 2 | 0 | 1 | 0 |
+| No second model (thinking from try 5) | 85 | 84 | 22 | 10 | 9 | 5 | 1 | 0 | - |
+
+Paired per-exercise outcomes (exact McNemar test on the discordant pairs):
+
+| Comparison | Solved only by first | Solved only by second | p |
+|---|---|---|---|
+| Cascade run 1 vs matched baseline | 14 | 0 | 0.0001 |
+| Cascade run 2 vs matched baseline | 15 | 1 | 0.0005 |
+| No second model vs matched baseline | 15 | 4 | 0.019 |
+| Cascade run 1 vs no second model | 5 | 2 | 0.45 |
+| Cascade run 2 vs no second model | 6 | 3 | 0.51 |
+
+What this settles and what it does not:
+
+- **The gain survives matched settings.** With identical settings the single model solved 205 and the cascade 219 in both runs. After four fast tries the baseline had 198 solved and 27 open; six more fast tries solved 7 of them. In the no-second-model run, 201 were solved after four fast tries and four thinking tries solved 15 of the remaining 24.
+- **The cascade is not faster on the typical exercise.** The matched baseline has the lowest median (10.3 s). Escalation buys solve rate, at the cost of a longer tail and a longer run.
+- **Most of the gain needs only one model.** Switching Flash-Next to thinking mode, with no second model and one GPU, reached 216. The two cascade runs reached 219. The paired difference between them (5 vs 2, and 6 vs 3) is not distinguishable from run-to-run variation, which changed 4 outcomes between two identical cascade runs.
+- **A second model may still add a little.** Both cascade runs finished 3 above the single-model run, and DeepSeek solved 2 and 5 exercises that had survived six attempts. Three runs are not enough to tell a small real effect from noise. It costs a second GPU and about an hour per run.
+
 ## Where the gain comes from
 
 **Fast retries stop paying.** The single-model retry runs show what further fast tries buy. In the vLLM run of the same model (`until10-qfn-vllm-nvfp4-diff-nothink`, 4-bit, same accuracy within noise), 196 exercises were solved after four tries. Tries 5 to 10 added 5 more, out of 29 still open. In the cascade, 197 were solved after four tries, and two reasoning tries added 20 out of 28.
@@ -162,7 +202,7 @@ Aggregate scores are stable while individual exercises are not. First-two-try sc
 
 ## Confounds
 
-- **Chat-history summaries.** The cascade ran with aider's summaries off. The single-model retry runs had them on. With the benchmark's default (`max_chat_history_tokens` = 1024), aider sends a summary request after nearly every coder reply, about half of all requests and 26% of prompt tokens. Turning them off, in a paired test on the same engine, cut wall clock by 29% (1 h 54 min to 1 h 21 min) and median time to solve by 27% (13.9 s to 10.1 s) with the same solve rate (74.2% both). So the 11.5 s versus 13.6 s median difference should not be credited to the cascade. Whether summaries change the solve rate over 10 tries has not been measured.
+- **Chat-history summaries (resolved for the matched baseline).** The matched baseline above has summaries off like the cascade. The earlier single-model retry runs in the Results table had them on, which is why they are no longer the main comparison. For reference: the cascade ran with aider's summaries off. The earlier single-model retry runs had them on. With the benchmark's default (`max_chat_history_tokens` = 1024), aider sends a summary request after nearly every coder reply, about half of all requests and 26% of prompt tokens. Turning them off, in a paired test on the same engine, cut wall clock by 29% (1 h 54 min to 1 h 21 min) and median time to solve by 27% (13.9 s to 10.1 s) with the same solve rate (74.2% both). So the 11.5 s versus 13.6 s median difference should not be credited to the cascade. Whether summaries change the solve rate over 10 tries has not been measured.
 - **Try caps differ.** 8 versus 10. This favors the baselines.
 - **The DeepSeek baseline had both GPUs.** In the cascade it has one. Its 1-GPU plus RAM retry run reached the same 92.0% with a median of 1.6 min.
 - **One thread versus four.** The cascade and the Flash-Next baseline ran one exercise at a time. The DeepSeek baseline ran four sessions, so its times are under load.
@@ -197,8 +237,8 @@ The nearer comparison is with systems that iterate until tests pass. The highest
 ## Next runs
 
 1. Done: the cascade was repeated unchanged (see Replication).
-2. Flash-Next alone, 10 tries, summaries off, 1 thread: the matched baseline.
-3. The cascade without DeepSeek (four fast, four thinking), to isolate what the second model adds.
+2. Done: the matched baseline (see Matched baseline and ablation).
+3. Done: the cascade without DeepSeek (see Matched baseline and ablation). More repeats are needed to tell whether the second model's small apparent contribution is real.
 4. A time budget on the reasoning stages, to recover the wall clock spent on unsolved exercises.
 5. Earlier escalation (two fast tries, then thinking), since the attempt success rate has already fallen to 37.5% by try 3.
 6. Other line-ups and other hardware.

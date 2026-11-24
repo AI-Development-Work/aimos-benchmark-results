@@ -230,6 +230,24 @@ Reading this fairly:
 - Write-up: [articles/stop-optimizing-a-model.md](articles/stop-optimizing-a-model.md).
 - Folder: `2026-11-23-23-26-13--full-team-qfn-think-ds-nosum-diff-1123-2325`.
 
+## Matched baseline, no-second-model run and Maya 2-bit Flash-Next (2026-11-24)
+
+All four ran unattended after the team repeat. No infrastructure errors.
+
+| Run | Engine / hardware | Solved | 2-try | Median s | Mean s | 90th pct s | Wall clock | Solved at try |
+|---|---|---|---|---|---|---|---|---|
+| Flash-Next Q8_0 alone, thinking OFF, up to 10 tries, summaries off, 1 thread (`full-team-qfn-nothink10-nosum-diff-1124-0809`) | Basalt, GPU 0 + RAM | 205 (91.1%) | 76.9% | 10.3 | 17.5 | 37.0 | 2h07m | 90, 83, 23, 2, 4, 2, 0, 1 |
+| Flash-Next Q8_0, 4 fast + 4 thinking tries, no second model (`full-team-qfn-think-only-nosum-diff-1124-1017`) | Basalt, GPU 0 + RAM | 216 (96.0%) | 75.1% | 10.9 | 27.0 | 68.4 | 2h33m | 85, 84, 22, 10 then 9, 5, 1, 0 |
+| Flash-Next 2-bit UD-IQ2_XS, thinking OFF, standard 2 tries, 4 threads (`full-qfn-maya-iq2xs-g1-diff-nothink-1124-0808`) | Maya, GPU 1 | 165 (73.3%) | 73.3% | 62.4 | 82.9 | 169.1 | 1h33m | - |
+| Flash-Next 2-bit UD-IQ2_XS, thinking OFF, up to 10 tries, 4 threads (`until10-qfn-maya-iq2xs-g1-diff-nothink-1124-0942`) | Maya, GPU 1 | 205 (91.1%) | 72.0% | 71.9 | 116.0 | 287.2 | 2h37m | 78, 84, 31, 7, 3, 1, 0, 1 |
+
+- Matched baseline vs the team runs: 205 vs 219 and 219 with identical settings. Paired: the team solved 14 (run 1) and 15 (repeat) exercises the baseline did not; the baseline solved 0 and 1 the team did not.
+- No second model vs the team runs: 216 vs 219. Paired differences 5 vs 2 and 6 vs 3, within the variation between two identical team runs (4 outcomes changed).
+- Unsolved in the matched baseline (20): cpp/circular-buffer, cpp/grade-school, cpp/kindergarten-garden, cpp/meetup, cpp/spiral-matrix, go/connect, go/robot-simulator, java/bowling, java/connect, java/custom-set, java/hangman, java/rational-numbers, java/satellite, java/zipper, javascript/affine-cipher, javascript/grade-school, javascript/react, javascript/resistor-color-trio, python/bowling, rust/forth.
+- Unsolved without the second model (9): cpp/meetup, cpp/queen-attack, cpp/spiral-matrix, go/paasio, go/robot-simulator, java/hangman, java/rational-numbers, java/zebra-puzzle, javascript/go-counting.
+- Never solved in any of the four team-harness runs: cpp/spiral-matrix, go/robot-simulator, java/rational-numbers.
+- Maya 2-bit: the smoke test before these runs passed only 2 of 5, but the full runs match the 8-bit model's solve rate (73.3% in 2 tries; 91.1% in 10). They ran with the standard chat summaries and 4 threads on one GPU, so the times (median about 1 min) are not comparable with the 1-thread Basalt runs.
+
 ## Qwen3.8-27B BF16 (16-bit) — thinking ON (2026-11-22)
 
 - Setup: Qwen3.8-27B BF16 (full precision), vLLM, GPU 1 only, thinking ON, Aider Polyglot 225, diff format, 2 tries. Run folder `2026-11-22-02-58-31--full-qwen38-bf16-diff-thinking` (run name `full-qwen38-bf16-diff-thinking`).
