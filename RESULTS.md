@@ -198,6 +198,35 @@ What we learned:
 - Accuracy differences between these runs (73–79%) are within run-to-run variation; the same prompt gives different answers across runs even at temperature 0.
 - Still open: an offline replay of the logged prompts estimates about 41–47% of prompt tokens are reusable with checkpoints at turn boundaries, against the 16% reached here. That is the next engine change.
 
+## Model team: Qwen3.8-Flash-Next + DeepSeek V4.1-Flash working together (2026-11-24)
+
+First full run of a *team* of models instead of one model. Same 225 Aider Polyglot exercises, diff format, chat-history summaries off, 1 thread.
+
+How the team works on each exercise (it stops at the first correct answer):
+
+| Tries | Model | Mode | Engine | Where |
+|---|---|---|---|---|
+| 1-4 | Qwen3.8-Flash-Next Q8_0 | thinking OFF | Basalt v0.5.5 | GPU 0 + RAM |
+| 5-6 | Qwen3.8-Flash-Next Q8_0 | thinking ON | Basalt v0.5.5 | GPU 0 + RAM |
+| 7-8 | DeepSeek V4.1-Flash (2-bit) | thinking ON | Maya | GPU 1 |
+
+| Measure | Team (up to 8 tries) | Flash-Next alone (up to 10 tries) | DeepSeek alone (up to 10 tries) |
+|---|---|---|---|
+| Solved | **219 / 225 (97.3%)** | 204 / 225 (90.7%) | 207 / 225 (92.0%) |
+| Score after 2 tries | 75.1% | 75.1% | 68.9% |
+| Median time to solve | 11.5 s | 13.6 s | 0.8 min |
+| Total run time | 3 h 39 min | 2 h 40 min | - |
+
+- Time to solve: mean 32.1 s, 90% of solved exercises within 81.6 s. Solved within 10 s: 39.1% of all exercises; within 30 s: 73.8%; within 5 min: 96.4%.
+- Who solved what: Flash-Next thinking OFF 197 (tries 1-4: 85, 84, 21, 7); Flash-Next thinking ON 20; DeepSeek 2. Unsolved: 6.
+- No infrastructure errors, no timeouts.
+
+Reading this fairly:
+- The gain comes from changing *how* the model works after it fails (turning thinking on), not from more tries: the team used fewer tries (8) than the single-model runs (10) and solved 15 more exercises.
+- This is one run. In repeat runs of a single model about a third of exercises flip between solved and unsolved, so a repeat is needed before treating the size of the gain as settled.
+- The team run is longer in total because the hard exercises now get thinking-mode attempts instead of being abandoned.
+- Folder: `2026-11-23-23-26-13--full-team-qfn-think-ds-nosum-diff-1123-2325`.
+
 ## Qwen3.8-27B BF16 (16-bit) — thinking ON (2026-11-22)
 
 - Setup: Qwen3.8-27B BF16 (full precision), vLLM, GPU 1 only, thinking ON, Aider Polyglot 225, diff format, 2 tries. Run folder `2026-11-22-02-58-31--full-qwen38-bf16-diff-thinking` (run name `full-qwen38-bf16-diff-thinking`).

@@ -11,6 +11,7 @@ What developers actually care about is how fast they get working code, not how m
 
 | Run | Engine | Hardware | Leaderboard score (2 tries) | Solved (final) | Median time to solve | Solved within 5 min | within 10 min | within 30 min |
 |---|---|---|---|---|---|---|---|---|
+| **Team: Qwen3.8-Flash-Next (fast, then thinking), then DeepSeek V4.1-Flash — up to 8 tries** | Basalt + Maya | 2 GPUs + RAM | 75.1% | **97.3%** | 0.2 min | 96.4% | 97.3% | 97.3% |
 | **DeepSeek V4.1-Flash (2-bit), thinking OFF — retry run** | Maya | 2 GPUs | 68.9% | 92.0% | 0.8 min | 88.4% | 90.7% | 92.0% |
 | DeepSeek V4.1-Flash (2-bit), thinking OFF — retry run | Maya | 1 GPU + RAM | 72.0% | 92.0% | 1.6 min | 78.7% | 89.8% | 91.6% |
 | **Qwen3.8-Flash-Next Q8_0, thinking OFF — retry run** | Basalt | 1 GPU + RAM | 75.1% | 90.7% | 0.2 min | 90.7% | 90.7% | 90.7% |
