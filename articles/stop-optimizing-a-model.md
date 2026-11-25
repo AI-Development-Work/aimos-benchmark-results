@@ -2,7 +2,7 @@
 
 *Brian K. Hudes, MD · AiMOS Systems · 24 November 2026*
 
-*Preliminary. Two full runs of the cascade (the second an unchanged repeat, added 24 November). A matched single-model baseline and a run without the second model were added the same day (see Matched baseline and ablation). Technical companion to "Stop Optimizing a Model. Solve the Problem."*
+*Preliminary. Two full runs of the cascade (the second an unchanged repeat, added 24 November). A matched single-model baseline and a run without the second model were added the same day (see Matched baseline and ablation), and five single-model variants on 24-25 November (see Variants). Technical companion to "Stop Optimizing a Model. Solve the Problem."*
 
 ## Summary
 
@@ -177,6 +177,33 @@ What this settles and what it does not:
 - **Most of the gain needs only one model.** Switching Flash-Next to thinking mode, with no second model and one GPU, reached 216. The two cascade runs reached 219. The paired difference between them (5 vs 2, and 6 vs 3) is not distinguishable from run-to-run variation, which changed 4 outcomes between two identical cascade runs.
 - **A second model may still add a little.** Both cascade runs finished 3 above the single-model run, and DeepSeek solved 2 and 5 exercises that had survived six attempts. Three runs are not enough to tell a small real effect from noise. It costs a second GPU and about an hour per run.
 
+## Variants of the single-model cascade (24-25 November)
+
+Five more runs, all Flash-Next alone on one GPU with the cascade's settings (summaries off, 1 thread). Two ran side by side, one model instance per GPU.
+
+| Variant | Solved | Within 2 tries | Median | Mean / 90th pct | Wall clock | Solved at each try |
+|---|---|---|---|---|---|---|
+| 4 fast + 4 thinking (first run, from above) | 216 (96.0%) | 75.1% | 10.9 s | 27.0 / 68.4 s | 2 h 33 min | 85, 84, 22, 10 / 9, 5, 1, 0 |
+| 4 fast + 4 thinking, repeat | 215 (95.6%) | 74.7% | 12.1 s | 26.5 / 66.0 s | 2 h 44 min | 82, 86, 27, 4 / 12, 4, 0, 0 |
+| 4 fast + 4 thinking, thinking tries capped at 300 s | 217 (96.4%) | 75.6% | 12.5 s | 26.7 / 70.2 s | 2 h 17 min | 88, 82, 25, 6 / 13, 1, 2, 0 |
+| 2 fast + 4 thinking (6 tries) | 220 (97.8%) | 75.1% | 12.8 s | 42.7 / 98.8 s | 3 h 11 min | 84, 85 / 38, 10, 1, 2 |
+| 3 fast + 4 thinking (7 tries) | 219 (97.3%) | 72.4% | 12.8 s | 35.5 / 84.0 s | 3 h 15 min | 81, 82, 26 / 19, 6, 3, 2 |
+| 4 fast + 4 thinking, fresh conversation at the switch | 220 (97.8%) | 79.6% | 11.5 s | 32.1 / 54.2 s | 3 h 24 min | 82, 97, 16, 9 / 11, 3, 2, 0 |
+
+No infrastructure errors in any run.
+
+Paired against the matched baseline (exact McNemar, nominal): 4+4 repeat 12 vs 2 (p = 0.013); 300 s cap 13 vs 1 (p = 0.002); 2+4 17 vs 2 (p = 0.0007); 3+4 14 vs 0 (p = 0.0001); fresh 15 vs 0 (p = 0.00006).
+
+What these runs show:
+
+- **The single-model result is stable and repeats.** Three runs of 4 fast + 4 thinking gave 216, 215 and 217 (the 300 s cap never fired, so that run is in effect a third repeat). Every escalation run, in every configuration, beat the matched baseline's 205.
+- **A second model is not needed to reach the top of the range.** Three single-model variants scored 219, 220 and 220, level with or above the two-model cascade's 219 and 219. All eight escalation runs fall between 215 and 220.
+- **Escalating earlier trades time for a few exercises.** With 2 or 3 fast tries the count was 220 and 219, against 215 to 217 with 4 fast tries, but the runs took about 35 minutes longer because roughly twice as many exercises reach the slow thinking tries. The paired differences against the 4+4 runs (4 vs 0, 7 vs 2, 5 vs 2 for the 2+4 run) are not significant on their own.
+- **A fresh conversation at the switch may help, and is not yet shown to.** The fresh run solved 16 of the 21 exercises still open after four fast tries (76%), against 15 of 24, 16 of 26 and 16 of 24 (62 to 67%) when the failed attempts stay in the conversation. Paired against the three 4+4 runs: 5 vs 1, 6 vs 1 and 4 vs 1. Consistent in direction, not significant, and the hand-off note in this run wrongly told the model the earlier attempts were by another model. It needs a corrected rerun.
+- **The time cap is untested.** No thinking try reached the 300 s limit in that run, so it says nothing about whether a cap recovers time. The shorter wall clock (2 h 17 min) is run-to-run variation. A tighter cap is needed to test the idea.
+- **The first two tries are noisy.** The share solved within two tries ranged from 71.6% to 79.6% across runs that are identical for those tries.
+- **Two exercises were never solved** in any of the nine team-harness runs: cpp/spiral-matrix and java/rational-numbers. go/robot-simulator was solved once, in the 2+4 run. In all, 28 of the 225 exercises went unsolved in at least one run.
+
 ## Where the gain comes from
 
 **Fast retries stop paying.** The single-model retry runs show what further fast tries buy. In the vLLM run of the same model (`until10-qfn-vllm-nvfp4-diff-nothink`, 4-bit, same accuracy within noise), 196 exercises were solved after four tries. Tries 5 to 10 added 5 more, out of 29 still open. In the cascade, 197 were solved after four tries, and two reasoning tries added 20 out of 28.
@@ -239,9 +266,10 @@ The nearer comparison is with systems that iterate until tests pass. The highest
 1. Done: the cascade was repeated unchanged (see Replication).
 2. Done: the matched baseline (see Matched baseline and ablation).
 3. Done: the cascade without DeepSeek (see Matched baseline and ablation). More repeats are needed to tell whether the second model's small apparent contribution is real.
-4. A time budget on the reasoning stages, to recover the wall clock spent on unsolved exercises.
-5. Earlier escalation (two fast tries, then thinking), since the attempt success rate has already fallen to 37.5% by try 3.
-6. Other line-ups and other hardware.
+4. A tighter time budget on the reasoning stages (the 300 s cap tried on 24 November never fired; see Variants).
+5. Done once: earlier escalation (see Variants). Needs repeats.
+6. A corrected rerun of the fresh-conversation variant, with repeats.
+7. Other line-ups and other hardware.
 
 ## Data
 

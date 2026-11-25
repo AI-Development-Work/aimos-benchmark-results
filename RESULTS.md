@@ -230,6 +230,30 @@ Reading this fairly:
 - Write-up: [articles/stop-optimizing-a-model.md](articles/stop-optimizing-a-model.md).
 - Folder: `2026-11-23-23-26-13--full-team-qfn-think-ds-nosum-diff-1123-2325`.
 
+## Single-model cascade variants (2026-11-24 to 25)
+
+Flash-Next Q8_0 alone on Basalt, one GPU + RAM per run, summaries off, 1 thread, diff format. Two model instances ran side by side (GPU 0 port 8022, GPU 1 port 8023). No infrastructure errors; no try hit a model timeout in any run.
+
+| Run folder suffix | Schedule | Solved | 2-try | Median s | Mean s | 90th pct s | Wall | <=5 / <=10 / <=30 min | Solved at try |
+|---|---|---|---|---|---|---|---|---|---|
+| `full-team-qfn-think-only-rep2-nosum-diff-1124-1633` | 4 fast + 4 thinking (repeat) | 215 (95.6%) | 74.7% | 12.1 | 26.5 | 66.0 | 2h44m | 95.1 / 95.6 / 95.6% | 82, 86, 27, 4, 12, 4, 0, 0 |
+| `full-team-qfn-early2-nosum-diff-1124-1634` | 2 fast + 4 thinking | 220 (97.8%) | 75.1% | 12.8 | 42.7 | 98.8 | 3h11m | 96.0 / 97.3 / 97.8% | 84, 85, 38, 10, 1, 2 |
+| `full-team-qfn-early3-nosum-diff-1124-1920` | 3 fast + 4 thinking | 219 (97.3%) | 72.4% | 12.8 | 35.5 | 84.0 | 3h15m | 96.4 / 97.3 / 97.3% | 81, 82, 26, 19, 6, 3, 2 |
+| `full-team-qfn-think-only-t300-nosum-diff-1124-1947` | 4 + 4, thinking timeout 300 s (never fired) | 217 (96.4%) | 75.6% | 12.5 | 26.7 | 70.2 | 2h17m | 96.0 / 96.4 / 96.4% | 88, 82, 25, 6, 13, 1, 2, 0 |
+| `full-team-qfn-think-only-fresh-nosum-diff-1124-2239` | 4 + 4, fresh conversation at the mode switch | 220 (97.8%) | 79.6% | 11.5 | 32.1 | 54.2 | 3h24m | 95.6 / 97.8 / 97.8% | 82, 97, 16, 9, 11, 3, 2, 0 |
+
+Unsolved:
+- 4+4 repeat (10): cpp/grade-school, cpp/kindergarten-garden, cpp/meetup, cpp/spiral-matrix, go/pov, go/robot-simulator, go/sublist, java/hangman, java/rational-numbers, python/bowling.
+- 2+4 (5): cpp/meetup, cpp/queen-attack, cpp/spiral-matrix, java/rational-numbers, javascript/go-counting.
+- 3+4 (6): cpp/kindergarten-garden, cpp/meetup, cpp/spiral-matrix, go/robot-simulator, java/rational-numbers, javascript/react.
+- 300 s cap (8): cpp/meetup, cpp/spiral-matrix, go/robot-simulator, java/rational-numbers, java/series, java/zipper, javascript/react, python/bowling.
+- Fresh (5): cpp/spiral-matrix, go/robot-simulator, java/hangman, java/rational-numbers, java/zipper.
+- Unsolved in all nine team-harness runs: cpp/spiral-matrix, java/rational-numbers.
+
+Paired against the matched baseline (solved only by the variant vs only by the baseline): 4+4 repeat 12/2; 300 s cap 13/1; 2+4 17/2; 3+4 14/0; fresh 15/0.
+
+Caveats: the fresh-conversation run used a hand-off note that says the earlier attempts were "by another model" (they were by the same model); treat it as provisional. The harness version changed between the earlier runs and these (0.2.2 to 0.3.0); an independent review found behaviour identical with the new option off.
+
 ## Matched baseline, no-second-model run and Maya 2-bit Flash-Next (2026-11-24)
 
 All four ran unattended after the team repeat. No infrastructure errors.
