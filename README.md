@@ -7,17 +7,25 @@ the hardware config and date it was run under.
 
 **New (24 Nov 2026):** a team of two local models solved 97.3% of the benchmark in one run. Technical write-up: [Escalation on failure: a two-model local cascade solves 219 of 225 Aider Polyglot exercises](articles/stop-optimizing-a-model.md)
 
+**Update (25 Nov 2026):** six more single-model runs (Flash-Next alone, one GPU): repeats of the 3 fast + 4 thinking and 2 fast + 4 thinking runs, and four runs that start a fresh conversation at the switch to thinking with a corrected hand-off note. They solved 216 to 222 of 225, so the single-model escalation runs now span 215 to 222 against 205 for the matched baseline; the single-model runs (219 to 222) are level with or slightly above the two-model team's 219; the difference is within run-to-run variation. Escalation beat the baseline in every run and one model was enough. At 4 fast + 4 thinking, a fresh conversation at the switch is consistent in direction and likely a modest benefit; its size is not established, and the 2 fast + 4 thinking comparisons are mixed; escalating earlier is not supported by the repeats, and the 2 fast + 4 thinking fresh runs took about five hours against about three and a half. Details: [RESULTS.md](RESULTS.md) and the [article](articles/stop-optimizing-a-model.md). In-sample on a public benchmark; not comparable with two-try leaderboard scores.
+
 ## Headline: time to a correct solution
 
 What developers actually care about is how fast they get working code, not how many tries a model needs. This table scores every run on **wall-clock time to a correct solution**: the share of all 225 exercises solved within 5, 10 and 30 minutes of starting, all tries included. The standard leaderboard number (pass within 2 tries) is shown alongside for comparison.
 
 | Run | Engine | Hardware | Leaderboard score (2 tries) | Solved (final) | Median time to solve | Solved within 5 min | within 10 min | within 30 min |
 |---|---|---|---|---|---|---|---|---|
+| Flash-Next alone: 4 fast + 4 thinking, fresh conversation at the switch, corrected hand-off note | Basalt | 1 GPU + RAM | 77.8% | 98.7% | 0.2 min | 96.4% | 97.3% | 98.7% |
+| Flash-Next alone: 2 fast, then 4 thinking, fresh conversation at the switch, corrected hand-off note | Basalt | 1 GPU + RAM | 72.4% | 98.7% | 0.2 min | 93.3% | 98.2% | 98.7% |
+| Flash-Next alone: 3 fast tries, then 4 thinking tries — repeat | Basalt | 1 GPU + RAM | 73.3% | 98.2% | 0.2 min | 96.9% | 98.2% | 98.2% |
 | **Team: Qwen3.8-Flash-Next (fast, then thinking), then DeepSeek V4.1-Flash — up to 8 tries** | Basalt + Maya | 2 GPUs + RAM | 75.1% | **97.3%** | 0.2 min | 96.4% | 97.3% | 97.3% |
 | **Team repeat (unchanged): Flash-Next (fast, then thinking), then DeepSeek — up to 8 tries** | Basalt + Maya | 2 GPUs + RAM | 71.6% | 97.3% | 0.2 min | 96.4% | 96.9% | 96.9% |
+| Flash-Next alone: 4 fast + 4 thinking, fresh conversation at the switch, corrected hand-off note — second run | Basalt | 1 GPU + RAM | 76.9% | 97.3% | 0.2 min | 96.0% | 97.3% | 97.3% |
+| Flash-Next alone: 2 fast, then 4 thinking, fresh conversation at the switch, corrected hand-off note — second run | Basalt | 1 GPU + RAM | 74.2% | 97.3% | 0.2 min | 94.2% | 96.9% | 97.3% |
 | **Flash-Next alone, fast then thinking (4 + 4 tries), no second model** | Basalt | 1 GPU + RAM | 75.1% | 96.0% | 0.2 min | 96.0% | 96.0% | 96.0% |
+| Flash-Next alone: 2 fast tries, then 4 thinking tries — repeat | Basalt | 1 GPU + RAM | 71.1% | 96.0% | 0.2 min | 94.2% | 96.0% | 96.0% |
 | **Flash-Next alone: 2 fast tries, then 4 thinking tries** | Basalt | 1 GPU + RAM | 75.1% | 97.8% | 0.2 min | 96.0% | 97.3% | 97.8% |
-| **Flash-Next alone: 4 fast + 4 thinking, fresh conversation at the switch** | Basalt | 1 GPU + RAM | 79.6% | 97.8% | 0.2 min | 95.6% | 97.8% | 97.8% |
+| Flash-Next alone: 4 fast + 4 thinking, fresh conversation at the switch (original hand-off note, provisional) | Basalt | 1 GPU + RAM | 79.6% | 97.8% | 0.2 min | 95.6% | 97.8% | 97.8% |
 | Flash-Next alone: 3 fast tries, then 4 thinking tries | Basalt | 1 GPU + RAM | 72.4% | 97.3% | 0.2 min | 96.4% | 97.3% | 97.3% |
 | Flash-Next alone: 4 fast + 4 thinking, 300 s cap on thinking tries (cap never triggered) | Basalt | 1 GPU + RAM | 75.6% | 96.4% | 0.2 min | 96.0% | 96.4% | 96.4% |
 | Flash-Next alone: 4 fast + 4 thinking — repeat | Basalt | 1 GPU + RAM | 74.7% | 95.6% | 0.2 min | 95.1% | 95.6% | 95.6% |
@@ -51,6 +59,10 @@ What developers actually care about is how fast they get working code, not how m
 | Qwen3.8-27B NVFP4 (4-bit), thinking OFF | vLLM | 1 GPU | 42.7% | 42.7% | 0.5 min | 42.2% | 42.7% | 42.7% |
 | Mistral Small 4 119B NVFP4 | vLLM | 1 GPU | 15.1% | 15.1% | 0.2 min | 15.1% | 15.1% | 15.1% |
 | Devstral Small 2 24B | vLLM | 1 GPU | 13.8% | 13.8% | 0.4 min | 13.8% | 13.8% | 13.8% |
+
+Bold marks the rows highlighted in earlier versions of this page; it is not a ranking.
+
+**About the escalation rows:** "fresh conversation at the switch" means the conversation is reset when the same model goes from fast to thinking tries and it gets a short brief saying the earlier attempts were its own quick attempts that failed the tests. The 4 fast + 4 thinking row without "corrected hand-off note" (97.8%) used an earlier wording that wrongly called the earlier attempts "by another model"; treat it as provisional. The "Solved within" columns for the six rows added on 25 Nov were copied from the time-to-solution lines of the run chain log.
 
 **2 GPUs vs 1:** the same 2-bit DeepSeek build moved from 1 GPU + system RAM to fully on both GPUs went from 78.7% to 88.4% solved within 5 minutes, with the median time to solve halved (1.6 → 0.8 min), at the same final accuracy (92.0%).
 

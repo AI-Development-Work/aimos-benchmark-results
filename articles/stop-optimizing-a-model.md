@@ -1,8 +1,8 @@
 # Escalation on failure: a two-model local cascade solves 219 of 225 Aider Polyglot exercises
 
-*Brian K. Hudes, MD · AiMOS Systems · 24 November 2026*
+*Brian K. Hudes, MD · AiMOS Systems · 24 November 2026, updated 25 November 2026*
 
-*Preliminary. Two full runs of the cascade (the second an unchanged repeat, added 24 November). A matched single-model baseline and a run without the second model were added the same day (see Matched baseline and ablation), and five single-model variants on 24-25 November (see Variants). Technical companion to "Stop Optimizing a Model. Solve the Problem."*
+*Preliminary. Two full runs of the cascade (the second an unchanged repeat, added 24 November). A matched single-model baseline and a run without the second model were added the same day (see Matched baseline and ablation), and five single-model variants on 24-25 November. Six further single-model runs followed on 25 November: repeats of the 2+4 and 3+4 variants and four runs with a fresh conversation at the switch and a corrected hand-off note (see Variants). All figures are in-sample on a public benchmark. Technical companion to "Stop Optimizing a Model. Solve the Problem."*
 
 ## Summary
 
@@ -13,8 +13,10 @@ The cascade is four fast tries from the coder, two tries from the same coder wit
 Three points are worth a technical reader's time:
 
 1. The per-attempt success rate of fast retries decays quickly (60% on try 2, 20% on try 4). Switching the same model to reasoning mode on try 5 brought it back to 46%.
-2. Reasoning mode accounts for 20 of the 22 solves after try 4. The second model accounts for 2. This run supports mode switching. It does not yet support model switching.
+2. Reasoning mode accounts for 20 of the 22 solves after try 4. The second model accounts for 2. This run supports mode switching. It does not yet support model switching (see the update below).
 3. On the leaderboard's two-try rule the cascade scores 75.1%. The 97.3% is a work-until-correct number and is not comparable with leaderboard scores.
+
+Update, 25 November: later single-model runs (no second model) reached 219 to 222 of 225, level with or above the two-model cascade's 219 and 219, so on this benchmark one model was enough. Every escalation run (215 to 222) beat the matched baseline (205). At 4 fast + 4 thinking, a fresh conversation at the switch is consistent in direction and likely a modest benefit; its size is not established, and the 2 fast + 4 thinking comparisons are mixed. Escalating earlier is not supported by the repeats. None of this is faster: the median time to a passing solution is 10.9 to 14.8 s across the single-model escalation runs against 10.3 s for the baseline. See Variants.
 
 ## Setup
 
@@ -135,7 +137,7 @@ What held and what did not:
 - **The headline held.** The same number of exercises was solved, and only 4 of 225 final outcomes differed between runs. The final result is much more stable than the first-two-try score, which moved by 3.5 points (75.1% to 71.6%).
 - **The decay of fast retries held** in both cascade runs (about 20 to 24% by try 4), and so did the recovery on the first thinking try (46% and 48%). The later run without a second model showed the same direction with a smaller step: 29% on try 4 and 38% on the first thinking try.
 - **The second thinking try did not hold.** It solved 7 of 15 in run 1 and 2 of 13 in the repeat. The first thinking try carries most of the benefit.
-- **DeepSeek's share rose from 2 to 5.** Thinking mode plus the second model solved 22 in run 1 and 19 in the repeat, but the split between them moved. The evidence for a separate benefit from the second model is still thin; the run without DeepSeek, now in progress, addresses it.
+- **DeepSeek's share rose from 2 to 5.** Thinking mode plus the second model solved 22 in run 1 and 19 in the repeat, but the split between them moved. The evidence for a separate benefit from the second model is still thin; the run without DeepSeek (see Matched baseline and ablation) addresses it.
 
 ## Matched baseline and ablation
 
@@ -175,11 +177,11 @@ What this settles and what it does not:
 - **The gain survives matched settings.** With identical settings the single model solved 205 and the cascade 219 in both runs. After four fast tries the baseline had 198 solved and 27 open; six more fast tries solved 7 of them. In the no-second-model run, 201 were solved after four fast tries and four thinking tries solved 15 of the remaining 24.
 - **The cascade is not faster on the typical exercise.** The matched baseline has the lowest median (10.3 s). Escalation buys solve rate, at the cost of a longer tail and a longer run.
 - **Most of the gain needs only one model.** Switching Flash-Next to thinking mode, with no second model and one GPU, reached 216. The two cascade runs reached 219. The paired difference between them (5 vs 2, and 6 vs 3) is not distinguishable from run-to-run variation, which changed 4 outcomes between two identical cascade runs.
-- **A second model may still add a little.** Both cascade runs finished 3 above the single-model run, and DeepSeek solved 2 and 5 exercises that had survived six attempts. Three runs are not enough to tell a small real effect from noise. It costs a second GPU and about an hour per run.
+- **A second model may still add a little.** Both cascade runs finished 3 above the single-model run, and DeepSeek solved 2 and 5 exercises that had survived six attempts. Three runs are not enough to tell a small real effect from noise. It costs a second GPU and about an hour per run. Later single-model runs reached 219 to 222, level with or above the cascade (see Variants of the single-model cascade), so no benefit from a second model is shown.
 
 ## Variants of the single-model cascade (24-25 November)
 
-Five more runs, all Flash-Next alone on one GPU with the cascade's settings (summaries off, 1 thread). Two ran side by side, one model instance per GPU.
+Eleven more runs, all Flash-Next alone on one GPU with the cascade's settings (summaries off, 1 thread): five on 24-25 November, then six on 25 November (the last six rows of the table). Two ran side by side, one model instance per GPU. The six later runs used harness version 0.3.1, which differs from the earlier 0.3.0 only in the wording of the same-model hand-off note; it was independently reviewed before the fresh runs started. In a "fresh" run the conversation is reset when the model switches from fast to thinking tries, and a short brief says the earlier attempts were its own quick attempts that did not pass the tests. In a "keep" run the conversation continues.
 
 | Variant | Solved | Within 2 tries | Median | Mean / 90th pct | Wall clock | Solved at each try |
 |---|---|---|---|---|---|---|
@@ -188,21 +190,37 @@ Five more runs, all Flash-Next alone on one GPU with the cascade's settings (sum
 | 4 fast + 4 thinking, thinking tries capped at 300 s | 217 (96.4%) | 75.6% | 12.5 s | 26.7 / 70.2 s | 2 h 17 min | 88, 82, 25, 6 / 13, 1, 2, 0 |
 | 2 fast + 4 thinking (6 tries) | 220 (97.8%) | 75.1% | 12.8 s | 42.7 / 98.8 s | 3 h 11 min | 84, 85 / 38, 10, 1, 2 |
 | 3 fast + 4 thinking (7 tries) | 219 (97.3%) | 72.4% | 12.8 s | 35.5 / 84.0 s | 3 h 15 min | 81, 82, 26 / 19, 6, 3, 2 |
-| 4 fast + 4 thinking, fresh conversation at the switch | 220 (97.8%) | 79.6% | 11.5 s | 32.1 / 54.2 s | 3 h 24 min | 82, 97, 16, 9 / 11, 3, 2, 0 |
+| 4 fast + 4 thinking, fresh conversation at the switch (original hand-off note, provisional) | 220 (97.8%) | 79.6% | 11.5 s | 32.1 / 54.2 s | 3 h 24 min | 82, 97, 16, 9 / 11, 3, 2, 0 |
+| 3 fast + 4 thinking, repeat | 221 (98.2%) | 73.3% | 12.1 s | 36.7 / 83.4 s | 3 h 03 min | 89, 76, 27 / 18, 7, 3, 1 |
+| 2 fast + 4 thinking, repeat | 216 (96.0%) | 71.1% | 13.9 s | 41.7 / 112.1 s | 3 h 16 min | 84, 76 / 41, 11, 4, 0 |
+| 4 fast + 4 thinking, fresh, corrected hand-off note | 222 (98.7%) | 77.8% | 13.1 s | 41.8 / 91.3 s | 3 h 27 min | 87, 88, 21, 5 / 13, 6, 0, 2 |
+| 4 fast + 4 thinking, fresh, corrected hand-off note, second run | 219 (97.3%) | 76.9% | 11.9 s | 33.1 / 71.5 s | 3 h 22 min | 90, 83, 16, 13 / 13, 2, 1, 1 |
+| 2 fast + 4 thinking, fresh | 222 (98.7%) | 72.4% | 14.8 s | 66.4 / 224.3 s | 5 h 00 min | 84, 79 / 49, 8, 1, 1 |
+| 2 fast + 4 thinking, fresh, second run | 219 (97.3%) | 74.2% | 12.7 s | 55.5 / 194.3 s | 4 h 52 min | 87, 80 / 42, 6, 2, 2 |
 
-No infrastructure errors in any run.
+No infrastructure errors in any run, and no thinking try reached its time limit in the six runs of 25 November.
 
-Paired against the matched baseline (exact McNemar, nominal): 4+4 repeat 12 vs 2 (p = 0.013); 300 s cap 13 vs 1 (p = 0.002); 2+4 17 vs 2 (p = 0.0007); 3+4 14 vs 0 (p = 0.0001); fresh 15 vs 0 (p = 0.00006).
+Paired against the matched baseline (exact McNemar, nominal): 4+4 repeat 12 vs 2 (p = 0.013); 300 s cap 13 vs 1 (p = 0.002); 2+4 17 vs 2 (p = 0.0007); 3+4 14 vs 0 (p = 0.0001); original fresh 15 vs 0 (p = 0.00006).
+
+The six runs of 25 November, paired against the baseline (solved only by the variant vs only by the baseline; counts only, no p-values computed): 3+4 repeat 17 vs 1; 2+4 repeat 13 vs 2; 4+4 fresh 17 vs 0 and 14 vs 0; 2+4 fresh 17 vs 0 and 15 vs 1.
+
+Repeats of the same configuration (solved only by the first vs only by the second): 3+4 repeat against the first 3+4 run 3 vs 1; 2+4 repeat against the first 2+4 run 1 vs 5; the two corrected 4+4 fresh runs 4 vs 1; the two 2+4 fresh runs 3 vs 0.
+
+Fresh against keep, 4+4: the first corrected fresh run against the three keep runs (216, 215, 217) 8 vs 2, 8 vs 1, 6 vs 1; the second 5 vs 2, 5 vs 1, 4 vs 2. Fresh against keep, 2+4: the first 2+4 fresh run against the 2+4 repeat 6 vs 0 and against the first 2+4 run 3 vs 1; the second against the repeat 5 vs 2 and against the first 3 vs 4. The two fresh schedules against each other (4+4 first corrected run vs 2+4 first fresh run): 2 vs 2.
+
+Exercises still open after the fast tries, and how many the thinking tries then solved: 4+4 keep 15 of 24, 16 of 26 and 16 of 24; 4+4 fresh, original note, 16 of 21; 4+4 fresh, corrected, 21 of 24 and 17 of 23; 3+4 keep 30 of 36 and 29 of 33; 2+4 keep 51 of 56 and 56 of 65; 2+4 fresh 59 of 62 and 52 of 58.
 
 What these runs show:
 
-- **The single-model result is stable and repeats.** Three runs of 4 fast + 4 thinking gave 216, 215 and 217 (the 300 s cap never fired, so that run is in effect a third repeat). Every escalation run, in every configuration, beat the matched baseline's 205.
-- **A second model is not needed to reach the top of the range.** Three single-model variants scored 219, 220 and 220, level with or above the two-model cascade's 219 and 219. All eight escalation runs fall between 215 and 220.
-- **Escalating earlier trades time for a few exercises.** With 2 or 3 fast tries the count was 220 and 219, against 215 to 217 with 4 fast tries, but the runs took about 35 minutes longer because roughly twice as many exercises reach the slow thinking tries. The paired differences against the 4+4 runs (4 vs 0, 7 vs 2, 5 vs 2 for the 2+4 run) are not significant on their own.
-- **A fresh conversation at the switch may help, and is not yet shown to.** The fresh run solved 16 of the 21 exercises still open after four fast tries (76%), against 15 of 24, 16 of 26 and 16 of 24 (62 to 67%) when the failed attempts stay in the conversation. Paired against the three 4+4 runs: 5 vs 1, 6 vs 1 and 4 vs 1. Consistent in direction, not significant, and the hand-off note in this run wrongly told the model the earlier attempts were by another model. It needs a corrected rerun.
-- **The time cap is untested.** No thinking try reached the 300 s limit in that run, so it says nothing about whether a cap recovers time. The shorter wall clock (2 h 17 min) is run-to-run variation. A tighter cap is needed to test the idea.
-- **The first two tries are noisy.** The share solved within two tries ranged from 71.6% to 79.6% across runs that are identical for those tries.
-- **Two exercises were never solved** in any of the nine team-harness runs: cpp/spiral-matrix and java/rational-numbers. go/robot-simulator was solved once, in the 2+4 run. In all, 28 of the 225 exercises went unsolved in at least one run.
+- **The single-model result is stable and repeats.** Three runs of 4 fast + 4 thinking with the conversation kept gave 216, 215 and 217 (the 300 s cap never fired, so that run is in effect a third repeat). Every escalation run, in every configuration (215 to 222), beat the matched baseline's 205; the paired counts against the baseline range from 12 vs 2 to 17 vs 0.
+- **One model is enough.** The single-model runs reached 219 to 222, level with or above the two-model cascade's 219 and 219. All escalation runs, with or without a second model, fall between 215 and 222.
+- **Escalating earlier is not supported.** The first runs of 2 fast + 4 thinking (220) and 3 fast + 4 thinking (219) looked like a gain over the 215 to 217 of 4 fast + 4 thinking with the conversation kept. The repeats moved 2+4 from 220 to 216 and 3+4 from 219 to 221, and 2+4 with the conversation kept (220, 216) overlaps 4+4 with the conversation kept (215 to 217). Earlier switching also sends more exercises to the slow thinking tries (56 to 65 open at the switch with 2 fast tries, against 24 to 26 with 4).
+- **At 4 fast + 4 thinking, a fresh conversation at the switch is consistent in direction and likely a modest benefit; its size is not established, and the 2 fast + 4 thinking comparisons are mixed.** For 4+4, the two corrected fresh runs solved 222 and 219 against 215 to 217 with the conversation kept, and the thinking tries rescued 21 of 24 and 17 of 23 of the open exercises against 15 of 24, 16 of 26 and 16 of 24. All six paired comparisons favour fresh (8 vs 2, 8 vs 1, 6 vs 1, 5 vs 2, 5 vs 1, 4 vs 2). Each comparison is small, the comparisons are not independent because they share runs, and the two corrected fresh runs differ from each other by three exercises (4 vs 1 paired). For 2+4 the pairs are mixed: the first 2+4 fresh run beat the 2+4 repeat 6 vs 0 and the first 2+4 run 3 vs 1; the second beat the repeat 5 vs 2 but trailed the first 2+4 run 3 vs 4. The first fresh run (220) used a hand-off note that wrongly called the earlier attempts "by another model"; it stays in the record as provisional and the corrected runs replace it as the evidence.
+- **Fresh with 2 fast tries was slow.** The two 2+4 fresh runs reached 222 and 219, level with 4+4 fresh (222 and 219; 2 vs 2 paired), but took 5 h 00 min and 4 h 52 min against 3 h 03 min to 3 h 27 min for the other four runs of 25 November. Their thinking tries wrote about 2.0 million completion tokens each, against about 0.74 to 0.97 million for the others. That is no accuracy gain for about 45% more wall clock on this benchmark.
+- **Escalation is not faster.** Escalation solves more, but the median time to a passing solution is not lower: 10.9 to 14.8 s across the single-model escalation runs against 10.3 s for the matched baseline. The cost is a longer tail and a longer run.
+- **The time cap is untested.** No thinking try reached its time limit in any run, including the 300 s cap run, so none of them says whether a cap recovers time. The shorter wall clock of the 300 s run (2 h 17 min) is run-to-run variation. A tighter cap is needed to test the idea.
+- **The first two tries are noisy.** The share solved within two tries ranged from 71.1% to 79.6% across runs that are identical for those tries.
+- **One exercise was never solved** in any of the fifteen harness runs: cpp/spiral-matrix. java/rational-numbers was solved once (the first corrected fresh 4+4 run) and go/robot-simulator twice (that run and the first 2+4 run). (An earlier count of 28 exercises unsolved in at least one run covered only the first nine runs and has not been recomputed.)
 
 ## Where the gain comes from
 
@@ -215,7 +233,7 @@ What these runs show:
 
 This is the central observation. It compares two different runs, so it shares the single-run caveat below.
 
-**DeepSeek's contribution is small in this run.** Eight exercises reached DeepSeek and it solved two. Those eight had already survived six attempts by Flash-Next, so they are the hardest in the set, and 2 of 8 says little about DeepSeek in general. An earlier offline comparison of the two single-model retry runs found that DeepSeek solved 14 exercises Flash-Next never solved in 10 tries, for a union of 218 of 225. The cascade reached 219, about that union, with reasoning mode doing most of the work DeepSeek would otherwise have done. Whether a second model adds anything beyond reasoning mode is open. The run without DeepSeek will answer it.
+**DeepSeek's contribution is small in this run.** Eight exercises reached DeepSeek and it solved two. Those eight had already survived six attempts by Flash-Next, so they are the hardest in the set, and 2 of 8 says little about DeepSeek in general. An earlier offline comparison of the two single-model retry runs found that DeepSeek solved 14 exercises Flash-Next never solved in 10 tries, for a union of 218 of 225. The cascade reached 219, about that union, with reasoning mode doing most of the work DeepSeek would otherwise have done. Whether a second model adds anything beyond reasoning mode is open. Later single-model runs reached 219 to 222, which gives no sign that a second model adds anything beyond reasoning mode on this benchmark (see Variants of the single-model cascade).
 
 **Repetition is not useless for every model.** DeepSeek alone on two GPUs kept finding solutions late: tries 5 to 8 added 14 of the 32 exercises still open after try 4. On one GPU the same model added 5 of 23 and nothing after try 6. The decay of fast retries is clear for Flash-Next and mixed for DeepSeek.
 
@@ -255,7 +273,7 @@ The nearer comparison is with systems that iterate until tests pass. The highest
 
 ## Limits
 
-- Two runs of the cascade, both 219 of 225. The single-model baselines it is compared with are not yet matched in settings (see Confounds), so the size of the gain over a matched baseline is not established.
+- Two runs of the cascade, both 219 of 225. A matched baseline (205) exists; escalation beat it in every run, and the gain is in-sample (see Confounds).
 - Small, self-contained exercises with complete test suites. This says nothing about large repositories, ambiguous requirements or tasks with no tests.
 - The benchmark is public and old enough that some exercises may be in the training data of both models. That affects absolute scores more than the comparison between the cascade and the same models alone.
 - Attempts are unequal in cost. A try count is a poor unit. Wall-clock time to a passing solution is the measure I report and the one I would ask others to report.
@@ -265,10 +283,10 @@ The nearer comparison is with systems that iterate until tests pass. The highest
 
 1. Done: the cascade was repeated unchanged (see Replication).
 2. Done: the matched baseline (see Matched baseline and ablation).
-3. Done: the cascade without DeepSeek (see Matched baseline and ablation). More repeats are needed to tell whether the second model's small apparent contribution is real.
+3. Done: the cascade without DeepSeek (see Matched baseline and ablation). More repeats are needed to tell whether the second model's small apparent contribution is real. Later single-model runs (219 to 222) show no gain from a second model.
 4. A tighter time budget on the reasoning stages (the 300 s cap tried on 24 November never fired; see Variants).
-5. Done once: earlier escalation (see Variants). Needs repeats.
-6. A corrected rerun of the fresh-conversation variant, with repeats.
+5. Done: earlier escalation was repeated (see Variants); the repeats do not support it.
+6. Done: corrected reruns of the fresh-conversation variant, twice at 4+4 and twice at 2+4 (see Variants). Likely a modest benefit; more repeats are needed to establish its size. The 2+4 fresh runs were slow.
 7. Other line-ups and other hardware.
 
 ## Data

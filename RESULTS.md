@@ -226,7 +226,7 @@ Reading this fairly:
 - Repeated unchanged on 2026-11-24 (run `full-team-qfn-think-ds-nosum-diff-rep2-1124-0439`): again 219 / 225 (97.3%); 2-try 71.6%; median 12.8 s, mean 39.8 s, 90th percentile 56.9 s; wall clock 3 h 26 min; solved by stage 200 / 14 / 5 (by try: 83, 78, 31, 8 | 12, 2 | 3, 2); no infrastructure errors. Paired with run 1: 217 solved in both, 2 only in run 1 (cpp/grade-school, rust/xorcism), 2 only in the repeat (java/hangman, java/zipper), 4 unsolved in both (cpp/kindergarten-garden, cpp/spiral-matrix, go/robot-simulator, java/rational-numbers).
 - The final solve count was stable across the two runs (4 of 225 outcomes differed); the 2-try score moved by 3.5 points and the split between thinking mode and DeepSeek moved (20/2 vs 14/5).
 - The team run is longer in total because the hard exercises now get thinking-mode attempts instead of being abandoned.
-- Settings caveat: this run had aider's chat-history summaries off; the single-model retry runs had them on. Summaries off shortened median time by about a quarter in a separate test, so the 11.5 s vs 13.6 s difference should not be credited to the team. A matched baseline is planned.
+- Settings caveat: this run had aider's chat-history summaries off; the single-model retry runs had them on. Summaries off shortened median time by about a quarter in a separate test, so the 11.5 s vs 13.6 s difference should not be credited to the team. The matched baseline was run on 2026-11-24 (see below).
 - Write-up: [articles/stop-optimizing-a-model.md](articles/stop-optimizing-a-model.md).
 - Folder: `2026-11-23-23-26-13--full-team-qfn-think-ds-nosum-diff-1123-2325`.
 
@@ -248,11 +248,85 @@ Unsolved:
 - 3+4 (6): cpp/kindergarten-garden, cpp/meetup, cpp/spiral-matrix, go/robot-simulator, java/rational-numbers, javascript/react.
 - 300 s cap (8): cpp/meetup, cpp/spiral-matrix, go/robot-simulator, java/rational-numbers, java/series, java/zipper, javascript/react, python/bowling.
 - Fresh (5): cpp/spiral-matrix, go/robot-simulator, java/hangman, java/rational-numbers, java/zipper.
-- Unsolved in all nine team-harness runs: cpp/spiral-matrix, java/rational-numbers.
+- Unsolved in all nine team-harness runs: cpp/spiral-matrix, java/rational-numbers. (As of 2026-11-25, across fifteen runs, only cpp/spiral-matrix is unsolved in all; see the next section.)
 
 Paired against the matched baseline (solved only by the variant vs only by the baseline): 4+4 repeat 12/2; 300 s cap 13/1; 2+4 17/2; 3+4 14/0; fresh 15/0.
 
-Caveats: the fresh-conversation run used a hand-off note that says the earlier attempts were "by another model" (they were by the same model); treat it as provisional. The harness version changed between the earlier runs and these (0.2.2 to 0.3.0); an independent review found behaviour identical with the new option off.
+Caveats: the fresh-conversation run used a hand-off note that says the earlier attempts were "by another model" (they were by the same model); treat it as provisional. Superseded in part: corrected fresh-conversation reruns, and repeats of 2+4 and 3+4, are in the next section. The harness version changed between the earlier runs and these (0.2.2 to 0.3.0); an independent review found behaviour identical with the new option off.
+
+## Single-model cascade: repeats and corrected fresh-conversation runs (2026-11-25)
+
+Six further runs of Flash-Next Q8_0 alone on Basalt v0.5.5, one GPU + RAM per run, summaries off, 1 thread, diff format, temperature 0, one model, thinking tries limited to 1800 s. Two lanes ran concurrently, one per GPU (chain ran 2026-11-25 04:29:50Z to 17:52:34Z), so wall clocks are not strictly comparable with runs that had the machine to themselves. All six: rc=0, 225 of 225 finished, no infrastructure errors, and no thinking try hit its 1800 s limit.
+
+Harness: version 0.3.1, commit 85f0097, clean, for every run. It differs from 0.3.0 only in the wording of the hand-off note used when one model switches mode with a fresh conversation; it was independently reviewed before the fresh runs started. "Fresh" = the conversation is reset at the switch from fast to thinking tries, and the model is given a short brief stating that the earlier attempts were its own quick attempts and did not pass the tests (this corrects the earlier wording "by another model"). "Keep" = the conversation continues.
+
+| Run folder suffix | Schedule | Conversation at switch | Solved | 2-try | Median s | Mean s | 90th pct s | Wall | <=5 / <=10 / <=30 min | Solved at try (fast tries, then thinking tries) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `full-team-qfn-early3-nosum-diff-1125-0431` (S1) | 3 fast + 4 thinking (repeat) | keep | 221 (98.2%) | 73.3% | 12.1 | 36.7 | 83.4 | 3h03m | 96.9 / 98.2 / 98.2% | 89, 76, 27, 18, 7, 3, 1 |
+| `full-team-qfn-early2-nosum-diff-1125-0433` (S2) | 2 fast + 4 thinking (repeat) | keep | 216 (96.0%) | 71.1% | 13.9 | 41.7 | 112.1 | 3h16m | 94.2 / 96.0 / 96.0% | 84, 76, 41, 11, 4, 0 |
+| `full-team-qfn-think-only-fresh-nosum-diff-1125-0737` (S3) | 4 fast + 4 thinking | fresh | 222 (98.7%) | 77.8% | 13.1 | 41.8 | 91.3 | 3h27m | 96.4 / 97.3 / 98.7% | 87, 88, 21, 5, 13, 6, 0, 2 |
+| `full-team-qfn-early2-fresh-nosum-diff-1125-0756` (S4) | 2 fast + 4 thinking | fresh | 222 (98.7%) | 72.4% | 14.8 | 66.4 | 224.3 | 5h00m | 93.3 / 98.2 / 98.7% | 84, 79, 49, 8, 1, 1 |
+| `full-team-qfn-think-only-fresh-nosum-diff-1125-1107` (S5) | 4 fast + 4 thinking | fresh | 219 (97.3%) | 76.9% | 11.9 | 33.1 | 71.5 | 3h22m | 96.0 / 97.3 / 97.3% | 90, 83, 16, 13, 13, 2, 1, 1 |
+| `full-team-qfn-early2-fresh-nosum-diff-1125-1259` (S6) | 2 fast + 4 thinking | fresh | 219 (97.3%) | 74.2% | 12.7 | 55.5 | 194.3 | 4h52m | 94.2 / 96.9 / 97.3% | 87, 80, 42, 6, 2, 2 |
+
+Fast-try solves: S1 192, S2 160, S3 201, S4 163, S5 202, S6 167. Thinking-try solves: S1 29, S2 56, S3 21, S4 59, S5 17, S6 52.
+
+Tokens (prompt / completion), as printed:
+- S1: fast 3,909,016 / 672,329; thinking 701,899 / 739,855
+- S2: fast 2,863,914 / 588,327; thinking 1,235,440 / 960,179
+- S3: fast 3,819,601 / 670,322; thinking 455,116 / 967,041
+- S4: fast 2,911,752 / 586,337; thinking 633,873 / 2,029,976
+- S5: fast 3,885,392 / 662,784; thinking 550,312 / 969,110
+- S6: fast 2,980,829 / 583,772; thinking 1,117,957 / 1,999,793
+
+Unsolved:
+- S1 (4): cpp/spiral-matrix, go/robot-simulator, java/rational-numbers, python/sgf-parsing.
+- S2 (9): cpp/grade-school, cpp/kindergarten-garden, cpp/meetup, cpp/queen-attack, cpp/spiral-matrix, go/paasio, go/robot-simulator, java/rational-numbers, javascript/affine-cipher.
+- S3 (3): cpp/kindergarten-garden, cpp/spiral-matrix, java/zipper.
+- S4 (3): cpp/spiral-matrix, go/robot-simulator, java/rational-numbers.
+- S5 (6): cpp/grade-school, cpp/spiral-matrix, go/robot-simulator, java/hangman, java/rational-numbers, java/zipper.
+- S6 (6): cpp/kindergarten-garden, cpp/spiral-matrix, go/robot-simulator, java/rational-numbers, java/zipper, rust/simple-cipher.
+- Across all fifteen harness runs to date (the nine earlier runs plus these six), cpp/spiral-matrix is the only exercise unsolved in all fifteen. java/rational-numbers was solved once (S3); go/robot-simulator was solved twice (the first 2+4 run and S3).
+
+Paired counts (solved only by the first vs only by the second; all 225 ids shared; counts only, no significance tests computed for these):
+- Against the matched baseline (10 fast tries, 205 solved): S1 17/1; S2 13/2; S3 17/0; S4 17/0; S5 14/0; S6 15/1.
+- Repeats of the same configuration: S1 vs the first 3+4 run (219) 3/1; S2 vs the first 2+4 run (220) 1/5; S3 vs S5 4/1; S4 vs S6 3/0.
+- Fresh vs keep, 4 fast + 4 thinking: S3 vs the three keep-conversation 4+4 runs (216, 215, 217 with the inert cap) 8/2, 8/1, 6/1; S5 vs the same three 5/2, 5/1, 4/2.
+- Fresh vs keep, 2 fast + 4 thinking: S4 vs S2 6/0; S4 vs the first 2+4 run 3/1; S6 vs S2 5/2; S6 vs the first 2+4 run 3/4.
+- S3 vs S4 (4+4 fresh vs 2+4 fresh): 2/2.
+
+Exercises still open at the switch, and how many the thinking tries then solved (open = 225 minus fast-try solves; rescued = thinking-try solves):
+
+| Run | Schedule | Conversation | Open at switch | Rescued by thinking tries |
+|---|---|---|---|---|
+| 4+4 first run | 4+4 | keep | 24 | 15 |
+| 4+4 repeat | 4+4 | keep | 26 | 16 |
+| 4+4, inert 300 s cap | 4+4 | keep | 24 | 16 |
+| 4+4 fresh, original brief wording (provisional) | 4+4 | fresh | 21 | 16 |
+| S3 | 4+4 | fresh | 24 | 21 |
+| S5 | 4+4 | fresh | 23 | 17 |
+| 3+4 first run | 3+4 | keep | 36 | 30 |
+| S1 | 3+4 | keep | 33 | 29 |
+| 2+4 first run | 2+4 | keep | 56 | 51 |
+| S2 | 2+4 | keep | 65 | 56 |
+| S4 | 2+4 | fresh | 62 | 59 |
+| S6 | 2+4 | fresh | 58 | 52 |
+
+Timing note, 2+4 fresh runs: S4 and S6 took 5h00m and 4h52m, against 3h03m to 3h27m for the other four. Their thinking tries produced about 2.0 million completion tokens each, against about 0.74 to 0.97 million for the others; thinking-stage time was 11,968 s (S4) and 11,704 s (S6) against 4,622 to 6,043 s for the rest. With 2 fast tries, 58 to 62 exercises reach the thinking tries (23 to 24 with 4 fast tries, in the two corrected 4+4 fresh runs), and with a fresh conversation each of those starts its reasoning without the earlier turns. Slowest exercises in S4: go/robot-simulator 1140.4 s (unsolved), cpp/binary-search-tree 886.1 s, cpp/all-your-base 585.2 s. Time spent on exercises that ended unsolved: S4 1530.6 s, S3 1242.3 s.
+
+Median time to a passing solution was 11.9 to 14.8 s across these six runs; matched baseline 10.3 s. Not faster.
+
+All fifteen harness runs, solved of 225: matched baseline (10 fast tries) 205; 4+4 keep 216, 215, 217 (third with a 300 s cap that never fired); 4+4 fresh 220 (original brief wording, provisional), 222 (S3), 219 (S5); 3+4 keep 219, 221 (S1); 2+4 keep 220, 216 (S2); 2+4 fresh 222 (S4), 219 (S6); two-model cascade (second model for the last two tries) 219, 219.
+
+Reading:
+- Every escalation run (215 to 222) beat the matched baseline (205); paired counts against the baseline range from 12/2 to 17/0.
+- One model is enough: single-model runs reached 219 to 222; the two-model cascade reached 219 and 219.
+- Fresh conversation at the switch: for 4+4, the two corrected fresh runs solved 222 and 219 against 215 to 217 for keep; the thinking tries rescued 21 of 24 and 17 of 23 against 15 of 24, 16 of 26 and 16 of 24; all six paired comparisons favour fresh. Consistent in direction, but each comparison is small, the comparisons are not independent (they share runs), and the two fresh runs differ from each other by three exercises (4/1 paired). A likely modest benefit; the size is not established. At 2+4 the pairs are mixed (the second fresh run against the first 2+4 run is 3/4).
+- Earlier escalation is not supported: the repeats moved 2+4 from 220 to 216 and 3+4 from 219 to 221, and 2+4 keep (220, 216) overlaps 4+4 keep (215 to 217).
+- 2+4 fresh reached 222 and 219, level with 4+4 fresh (222, 219; S3 vs S4 2/2), but took about five hours against about three and a half: no accuracy gain for about 45% more wall clock on this benchmark.
+- Run-to-run noise: identical configurations differed by up to four exercises in total (2+4 keep: 220 vs 216) and by up to six exercises changing outcome (1/5). The within-two-tries score ranged from 71.1% to 79.6% across all runs, although tries 1 and 2 are configured identically everywhere.
+- No thinking try reached a time limit in any run; a time cap remains untested.
+- All figures are in-sample (stage boundaries tuned on the same exercises), on a public benchmark, work-until-correct, and not comparable with two-try leaderboard scores.
 
 ## Matched baseline, no-second-model run and Maya 2-bit Flash-Next (2026-11-24)
 
@@ -269,7 +343,7 @@ All four ran unattended after the team repeat. No infrastructure errors.
 - No second model vs the team runs: 216 vs 219. Paired differences 5 vs 2 and 6 vs 3, within the variation between two identical team runs (4 outcomes changed).
 - Unsolved in the matched baseline (20): cpp/circular-buffer, cpp/grade-school, cpp/kindergarten-garden, cpp/meetup, cpp/spiral-matrix, go/connect, go/robot-simulator, java/bowling, java/connect, java/custom-set, java/hangman, java/rational-numbers, java/satellite, java/zipper, javascript/affine-cipher, javascript/grade-school, javascript/react, javascript/resistor-color-trio, python/bowling, rust/forth.
 - Unsolved without the second model (9): cpp/meetup, cpp/queen-attack, cpp/spiral-matrix, go/paasio, go/robot-simulator, java/hangman, java/rational-numbers, java/zebra-puzzle, javascript/go-counting.
-- Never solved in any of the four team-harness runs: cpp/spiral-matrix, go/robot-simulator, java/rational-numbers.
+- Never solved in any of the four team-harness runs: cpp/spiral-matrix, go/robot-simulator, java/rational-numbers (as of 2026-11-24; see the fifteen-run summary below).
 - Maya 2-bit: the smoke test before these runs passed only 2 of 5, but the full runs match the 8-bit model's solve rate (73.3% in 2 tries; 91.1% in 10). They ran with the standard chat summaries and 4 threads on one GPU, so the times (median about 1 min) are not comparable with the 1-thread Basalt runs.
 
 ## Qwen3.8-27B BF16 (16-bit) — thinking ON (2026-11-22)
